@@ -1603,6 +1603,12 @@ var docs = [];
 var supabase = null;
 var dataReady = false;
 var SUPABASE_URL = 'https://vyuabunyyseovrwvngsr.supabase.co';
+
+// Global sbUpsert - overridden by bootstrap once ready
+var sbUpsert = function(payload) {
+  // fallback: save only to localStorage until bootstrap runs
+  saveToLocal();
+};
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5dWFidW55eXNlb3Zyd3ZuZ3NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NjU1NDgsImV4cCI6MjA4NzQ0MTU0OH0.gg0d3T6vK1p0cCIRbTAGoDnOSFxGfrLcR-oaiVL82ks';
 
 // ── SYNC DOT ───────────────────────────────────────
