@@ -1,0 +1,2625 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Запуск</title>
+<!-- Supabase -->
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Запуск">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a7bc4">
+<meta name="description" content="Стратегия и календарь запуска карьерного коучинга">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue: #1a7bc4; --blue-dark: #0f5a94; --blue-light: #e8f3fb; --blue-mid: #c5dff2;
+  --prod: #1a7bc4; --expert: #7c3aed; --both: #059669;
+  --text: #111; --muted: #6b7280; --border: #d1e5f5; --bg: #f4f8fc;
+  --surface: #fff; --surface2: #f0f7fd;
+  /* strategy compat vars */
+  --accent1: #1a7bc4; --accent2: #7c3aed; --accent3: #059669; --accent4: #f97316;
+  --gold: #d97706; --text-muted: #6b7280;
+}
+
+body { background: var(--bg); color: var(--text); font-family: 'Golos Text', sans-serif; min-height: 100vh; overflow-x: hidden; }
+/* Safe area for iPhone notch & home bar */
+.topnav { padding-top: env(safe-area-inset-top, 0); }
+body { padding-bottom: env(safe-area-inset-bottom, 0); }
+.page { overflow-x: hidden; }
+
+/* TOPO BG */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Ccircle cx='400' cy='400' r='80' fill='none' stroke='%231a7bc4' stroke-width='1' opacity='0.07'/%3E%3Ccircle cx='400' cy='400' r='150' fill='none' stroke='%231a7bc4' stroke-width='1' opacity='0.06'/%3E%3Ccircle cx='400' cy='400' r='220' fill='none' stroke='%231a7bc4' stroke-width='1' opacity='0.055'/%3E%3Ccircle cx='400' cy='400' r='290' fill='none' stroke='%231a7bc4' stroke-width='1' opacity='0.05'/%3E%3Ccircle cx='400' cy='400' r='360' fill='none' stroke='%231a7bc4' stroke-width='1' opacity='0.045'/%3E%3Ccircle cx='400' cy='400' r='430' fill='none' stroke='%231a7bc4' stroke-width='1' opacity='0.04'/%3E%3Ccircle cx='400' cy='400' r='500' fill='none' stroke='%231a7bc4' stroke-width='1' opacity='0.035'/%3E%3Ccircle cx='400' cy='400' r='570' fill='none' stroke='%231a7bc4' stroke-width='1' opacity='0.03'/%3E%3C/svg%3E");
+  background-size: 800px 800px; background-position: center;
+}
+
+/* ── NAV ── */
+.topnav {
+  background: white; border-bottom: 2px solid var(--blue-mid);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; height: 64px; position: sticky; top: 0; z-index: 100;
+}
+.nav-logo {
+  font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 900;
+  color: var(--blue); text-transform: uppercase; letter-spacing: 0.08em;
+  line-height: 1.2;
+}
+.nav-logo span { display: block; font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 0.12em; }
+.nav-tabs { display: flex; gap: 4px; }
+.nav-tab {
+  padding: 8px 20px; border-radius: 4px; border: 2px solid transparent;
+  background: none; color: var(--muted); font-family: 'Montserrat', sans-serif;
+  font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.18s;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.nav-tab:hover { color: var(--blue); border-color: var(--blue-mid); }
+.nav-tab.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+/* burger */
+.burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+.burger span { display: block; width: 24px; height: 2px; background: var(--blue); border-radius: 2px; transition: all 0.2s; }
+.mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: white; border-bottom: 2px solid var(--blue-mid); z-index: 99; padding: 12px 16px; flex-direction: column; gap: 6px; }
+.mobile-menu.open { display: flex; }
+.mobile-tab {
+  padding: 12px 16px; border-radius: 4px; border: 2px solid var(--border);
+  background: none; color: var(--muted); font-family: 'Montserrat', sans-serif;
+  font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.18s;
+  text-transform: uppercase; text-align: left;
+}
+.mobile-tab.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+@media (max-width: 640px) {
+  .nav-tabs { display: none; }
+  .burger { display: flex; }
+}
+
+/* ── PAGES ── */
+.page { display: none; position: relative; z-index: 1; }
+.page.active { display: block; }
+
+/* ── SHARED HEADER STYLE ── */
+.page-hero {
+  background: white; border-bottom: 2px solid var(--blue-mid);
+  padding: 40px 28px 32px; margin-bottom: 32px;
+}
+.page-hero-inner { max-width: 1000px; margin: 0 auto; }
+.hero-tag { font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: var(--blue); text-transform: uppercase; margin-bottom: 8px; }
+.page-hero h2 { font-family: 'Montserrat', sans-serif; font-size: clamp(28px, 5vw, 56px); font-weight: 900; color: var(--blue); text-transform: uppercase; line-height: 1; margin-bottom: 6px; }
+.hero-sub { font-size: 15px; color: var(--muted); font-family: 'Montserrat', sans-serif; font-weight: 600; }
+
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 20px 60px; }
+
+/* ── STRATEGY: SECTION TITLES ── */
+.section-title {
+  font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--blue);
+  margin-bottom: 20px; padding-bottom: 10px;
+  border-bottom: 2px solid var(--blue-mid);
+}
+
+/* ── FUNNEL ── */
+.funnel-section { margin-bottom: 48px; }
+.funnel { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+.funnel-step {
+  background: white; border: 2px solid var(--blue-mid);
+  border-radius: 6px; padding: 14px 16px; text-align: center;
+  flex: 1; min-width: 100px;
+}
+.funnel-step-num { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--blue); text-transform: uppercase; margin-bottom: 4px; }
+.funnel-step-name { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.funnel-step-desc { font-size: 11px; color: var(--muted); }
+.funnel-arrow { color: var(--blue); font-size: 18px; font-weight: 700; padding: 0 6px; flex-shrink: 0; }
+.windows-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 20px; }
+.window-card { background: white; border: 2px solid var(--blue-mid); border-radius: 6px; padding: 16px; }
+.window-num { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--blue); text-transform: uppercase; margin-bottom: 6px; }
+.window-title { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.window-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ── HORIZONTAL TIMELINE ── */
+.htimeline-section { margin-bottom: 48px; }
+.htimeline-scroll { overflow-x: auto; padding-bottom: 12px; cursor: grab; }
+.htimeline-scroll:active { cursor: grabbing; }
+.htimeline-scroll::-webkit-scrollbar { height: 4px; }
+.htimeline-scroll::-webkit-scrollbar-track { background: var(--blue-light); border-radius: 2px; }
+.htimeline-scroll::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 2px; }
+.htimeline { display: flex; align-items: flex-start; min-width: max-content; padding: 28px 16px 16px; position: relative; }
+.htimeline::before { content: ''; position: absolute; top: 42px; left: 16px; right: 16px; height: 2px; background: linear-gradient(90deg, var(--blue), var(--both), var(--accent4)); opacity: 0.3; }
+.ht-week { display: flex; flex-direction: column; align-items: center; width: 155px; flex-shrink: 0; }
+.ht-dot-wrap { width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; position: relative; z-index: 1; }
+.ht-dot { width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--bg); flex-shrink: 0; }
+.ht-dot.today { width: 20px; height: 20px; box-shadow: 0 0 0 4px rgba(26,123,196,0.2); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 4px rgba(26,123,196,0.2); } 50% { box-shadow: 0 0 0 8px rgba(26,123,196,0.08); } }
+.ht-content { text-align: center; padding: 0 4px; }
+.ht-week-label { font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+.ht-dates { font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 6px; font-family: 'Montserrat', sans-serif; }
+.ht-phase-tag { font-size: 10px; padding: 2px 8px; border-radius: 3px; margin-bottom: 6px; display: inline-block; font-family: 'Montserrat', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.ht-tasks { text-align: left; padding: 8px 10px; background: white; border: 1.5px solid var(--border); border-radius: 6px; width: 143px; }
+.ht-task { font-size: 10.5px; color: var(--muted); line-height: 1.45; margin-bottom: 3px; display: flex; gap: 5px; }
+.ht-task:last-child { margin-bottom: 0; }
+.ht-task-bullet { flex-shrink: 0; margin-top: 3px; font-size: 7px; color: var(--blue); }
+
+/* ── ACCORDION PHASES ── */
+.timeline-section { margin-bottom: 48px; }
+.timeline { display: flex; flex-direction: column; gap: 10px; }
+.phase { background: white; border: 2px solid var(--border); border-radius: 6px; overflow: hidden; }
+.phase-header { display: flex; align-items: center; gap: 14px; padding: 18px 20px; cursor: pointer; transition: background 0.15s; }
+.phase-header:hover { background: var(--blue-light); }
+.phase-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.p1 .phase-dot { background: var(--blue); }
+.p2 .phase-dot { background: var(--both); }
+.p3 .phase-dot { background: var(--accent4); }
+.phase-meta { flex: 1; }
+.phase-name { font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); }
+.phase-dates { font-size: 12px; color: var(--muted); margin-top: 2px; font-weight: 600; }
+.phase-badge { font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; background: var(--blue-light); color: var(--blue); padding: 5px 12px; border-radius: 3px; border: 1.5px solid var(--blue-mid); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.05em; }
+.phase-chevron { color: var(--blue); font-size: 12px; transition: transform 0.25s; flex-shrink: 0; }
+.phase.open .phase-chevron { transform: rotate(180deg); }
+.phase-body { display: none; border-top: 2px solid var(--border); }
+.phase.open .phase-body { display: block; }
+
+/* ── SPLIT WEEKS ── */
+.split-week { border-bottom: 1px solid var(--border); }
+.split-week:last-child { border-bottom: none; }
+.split-week-title { display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: var(--blue-light); border-bottom: 1px solid var(--blue-mid); }
+.split-wnum { font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: var(--blue); text-transform: uppercase; }
+.split-wdates { font-size: 12px; color: var(--muted); font-weight: 600; }
+.split-cols { display: grid; grid-template-columns: 1fr 1fr; }
+.split-col { padding: 14px 18px; }
+.prod-col { border-right: 1px solid var(--border); background: rgba(26,123,196,0.03); }
+.expert-col { background: rgba(124,58,237,0.03); }
+.split-role-label { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; padding-bottom: 7px; border-bottom: 1px solid var(--border); }
+.prod-label { color: var(--prod); }
+.expert-label { color: var(--expert); }
+.stask { display: flex; flex-wrap: wrap; gap: 3px 7px; margin-bottom: 9px; font-size: 13px; line-height: 1.45; align-items: baseline; }
+.stask:last-child { margin-bottom: 0; }
+.stask-day { font-weight: 700; font-size: 10px; color: var(--muted); white-space: nowrap; background: var(--blue-light); padding: 2px 7px; border-radius: 3px; flex-shrink: 0; font-family: 'Montserrat', sans-serif; }
+.stask-time { font-size: 10px; color: var(--both); white-space: nowrap; flex-shrink: 0; font-weight: 700; font-family: 'Montserrat', sans-serif; }
+.stask-text { color: var(--text); flex: 1; min-width: 100px; }
+@media (max-width: 600px) { .split-cols { grid-template-columns: 1fr; } .prod-col { border-right: none; border-bottom: 1px solid var(--border); } }
+
+/* ── BUDGET ── */
+.budget-section { margin-bottom: 48px; }
+.budget-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.budget-card { background: white; border: 2px solid var(--blue-mid); border-radius: 6px; padding: 16px 18px; }
+.budget-label { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+.budget-amount { font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 900; color: var(--blue); }
+.budget-amount span { font-size: 14px; color: var(--muted); }
+.budget-note { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.budget-card.total-card { border-color: var(--blue); background: var(--blue); }
+.total-card .budget-label { color: rgba(255,255,255,0.7); }
+.total-card .budget-amount { color: white; }
+.total-card .budget-note { color: rgba(255,255,255,0.7); }
+
+/* ── RESPONSIBILITY ── */
+.resp-section { margin-bottom: 48px; }
+.resp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.resp-card { background: white; border: 2px solid var(--border); border-radius: 6px; padding: 16px 18px; }
+.resp-role { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+.resp-card:nth-child(1) .resp-role { color: var(--prod); border-color: var(--blue-mid); }
+.resp-card:nth-child(2) .resp-role { color: var(--expert); border-color: #ddd6fe; }
+.resp-card:nth-child(3) .resp-role { color: var(--both); border-color: #bbf7d0; }
+.resp-card:nth-child(4) .resp-role { color: var(--accent4); border-color: #fed7aa; }
+.resp-item { font-size: 13px; color: var(--text); margin-bottom: 6px; padding-left: 12px; position: relative; line-height: 1.4; }
+.resp-item::before { content: '→'; position: absolute; left: 0; color: var(--blue); font-size: 11px; font-weight: 700; }
+
+/* ── CALENDAR STYLES ── */
+.cal-role-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.rf-btn { padding: 9px 18px; border-radius: 4px; border: 2px solid var(--border); background: white; color: var(--muted); font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; }
+.rf-btn:hover { color: var(--blue); border-color: var(--blue); }
+.rf-btn.act-all { background: var(--blue); border-color: var(--blue); color: white; }
+.rf-btn.act-prod { background: var(--prod); border-color: var(--prod); color: white; }
+.rf-btn.act-expert { background: var(--expert); border-color: var(--expert); color: white; }
+
+.cal-legend { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--muted); font-family: 'Montserrat', sans-serif; }
+.ldot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+
+.progress-wrap { background: white; border: 2px solid var(--border); border-radius: 6px; padding: 14px 18px; margin-bottom: 22px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.prog-label { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; color: var(--blue); text-transform: uppercase; white-space: nowrap; }
+.prog-bar-wrap { flex: 1; min-width: 100px; }
+.prog-bar { height: 5px; background: var(--blue-mid); border-radius: 3px; overflow: hidden; }
+.prog-fill { height: 100%; background: var(--blue); border-radius: 3px; transition: width 0.4s; }
+.prog-text { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; }
+.prog-text span { color: var(--blue); }
+
+.month-nav { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.nav-btn { width: 36px; height: 36px; background: white; border: 2px solid var(--border); border-radius: 4px; color: var(--blue); font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.18s; font-family: 'Montserrat', sans-serif; }
+.nav-btn:hover { background: var(--blue); color: white; border-color: var(--blue); }
+.month-title { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 900; color: var(--text); text-transform: uppercase; letter-spacing: 0.05em; min-width: 180px; }
+
+.phase-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 3px; }
+.ps-cell { height: 4px; border-radius: 1px; }
+.ps-cell.ph1 { background: var(--blue); }
+.ps-cell.ph2 { background: var(--both); }
+.ps-cell.ph3 { background: #f97316; }
+
+.weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 3px; }
+.wd { text-align: center; font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; color: var(--blue); padding: 7px 0; text-transform: uppercase; }
+.wd.wknd { color: var(--blue-mid); }
+
+.days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.day-cell { background: white; border: 1.5px solid var(--border); border-radius: 6px; min-height: 100px; padding: 7px; transition: border-color 0.15s; }
+.day-cell.empty { background: transparent; border-color: transparent; pointer-events: none; }
+.day-cell.wknd-cell { background: #fafcfe; }
+.day-cell.is-today { border-color: var(--blue); border-width: 2px; background: var(--blue-light); }
+.day-cell.clickable { cursor: pointer; }
+.day-cell.clickable:hover { border-color: var(--blue); }
+.day-cell.all-done { border-color: var(--both); background: #f0fdf4; }
+
+.dn { font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: #9ca3af; margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between; }
+.dn.today-dn { color: var(--blue); }
+.today-tag { font-size: 8px; background: var(--blue); color: white; padding: 1px 5px; border-radius: 3px; font-family: 'Montserrat', sans-serif; font-weight: 700; text-transform: uppercase; }
+
+.day-tasks { display: flex; flex-direction: column; gap: 3px; }
+.tpill { display: flex; align-items: flex-start; gap: 5px; cursor: pointer; transition: opacity 0.15s; padding: 1px 0; }
+.tpill:hover { opacity: 0.6; }
+.tpill.done .ttext { opacity: 0.35; text-decoration: line-through; }
+.tdot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.tpill.prod .tdot { background: var(--prod); }
+.tpill.expert .tdot { background: var(--expert); }
+.tpill.both .tdot { background: var(--both); }
+.ttext { font-size: 10.5px; line-height: 1.3; flex: 1; }
+.tpill.prod .ttext { color: #1e40af; }
+.tpill.expert .ttext { color: #5b21b6; }
+.tpill.both .ttext { color: #065f46; }
+.more-label { font-size: 10px; color: var(--muted); padding: 1px 0 0 10px; font-weight: 700; font-family: 'Montserrat', sans-serif; }
+
+/* ── MODAL ── */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(10,30,60,0.5); z-index: 500; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(3px); }
+.overlay.open { display: flex; }
+.modal { background: white; border: 2px solid var(--border); border-radius: 8px; padding: 28px; max-width: 420px; width: 100%; max-height: 85vh; overflow-y: auto; }
+.modal-date { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 900; color: var(--blue); text-transform: uppercase; margin-bottom: 4px; }
+.modal-phase { font-size: 11px; color: var(--muted); font-weight: 700; font-family: 'Montserrat', sans-serif; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.08em; }
+.modal-tasks { display: flex; flex-direction: column; gap: 8px; }
+.mtask { display: flex; align-items: flex-start; gap: 12px; padding: 13px 14px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: opacity 0.15s; }
+.mtask:hover { opacity: 0.82; }
+.mtask.prod { background: var(--blue-light); border-color: var(--blue-mid); }
+.mtask.expert { background: #f5f3ff; border-color: #ddd6fe; }
+.mtask.both { background: #f0fdf4; border-color: #bbf7d0; }
+.mtask.done { opacity: 0.4; }
+.mcheck { width: 22px; height: 22px; border-radius: 4px; border: 2.5px solid; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-top: 1px; font-family: 'Montserrat', sans-serif; }
+.mtask.prod .mcheck { border-color: var(--prod); color: var(--prod); }
+.mtask.expert .mcheck { border-color: var(--expert); color: var(--expert); }
+.mtask.both .mcheck { border-color: var(--both); color: var(--both); }
+.mtask.done.prod .mcheck { background: var(--prod); color: white; }
+.mtask.done.expert .mcheck { background: var(--expert); color: white; }
+.mtask.done.both .mcheck { background: var(--both); color: white; }
+.mbody { flex: 1; }
+.mrole { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; font-family: 'Montserrat', sans-serif; }
+.mtask.prod .mrole { color: var(--prod); }
+.mtask.expert .mrole { color: var(--expert); }
+.mtask.both .mrole { color: var(--both); }
+.mtext { font-size: 14px; color: var(--text); line-height: 1.45; }
+.mtime { font-size: 12px; color: var(--muted); margin-top: 5px; font-weight: 600; font-family: 'Montserrat', sans-serif; }
+.modal-close { margin-top: 16px; width: 100%; padding: 12px; background: var(--blue); border: none; border-radius: 4px; color: white; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; transition: background 0.18s; }
+.modal-close:hover { background: var(--blue-dark); }
+
+.mobile-cal-hint { display: none; text-align: center; font-size: 11px; color: var(--muted); margin-top: 10px; font-family: 'Montserrat', sans-serif; font-weight: 600; }
+@media (max-width: 640px) { .mobile-cal-hint { display: block; } }
+/* ── MOBILE ── */
+@media (max-width: 640px) {
+  .topnav { padding: 0 14px; height: 56px; }
+  .nav-logo { font-size: 11px; }
+  .wrap { padding: 0 10px 40px; }
+  .page-hero { padding: 22px 14px 18px; }
+  .page-hero h2 { font-size: 26px; }
+
+  /* Calendar mobile: compact cells, dots only */
+  .days-grid { gap: 2px; }
+  .phase-strip { gap: 2px; }
+  .weekdays { gap: 2px; }
+  .wd { font-size: 8px; padding: 5px 0; }
+
+  .day-cell {
+    min-height: 52px;
+    padding: 4px 3px;
+    border-radius: 4px;
+    border-width: 1px;
+  }
+  .dn {
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+  .today-tag { display: none; }
+
+  /* On mobile: hide text, show only colored dots */
+  .tpill { gap: 2px; }
+  .ttext { display: none; }
+  .tdot {
+    width: 7px; height: 7px;
+    margin-top: 0;
+    border-radius: 50%;
+  }
+  .day-tasks { flex-direction: row; flex-wrap: wrap; gap: 3px; align-items: center; }
+  .more-label { display: none; }
+
+  /* Progress bar */
+  .progress-wrap { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 14px; }
+  .prog-bar-wrap { width: 100%; }
+
+  /* Role filter */
+  .cal-role-filter { gap: 6px; }
+  .rf-btn { padding: 7px 12px; font-size: 11px; }
+
+  /* Legend */
+  .cal-legend { gap: 10px; }
+  .legend-item { font-size: 11px; }
+
+  /* Month nav */
+  .month-title { font-size: 14px; min-width: 140px; }
+  .nav-btn { width: 30px; height: 30px; font-size: 13px; }
+
+  /* Modal */
+  .modal { padding: 20px 16px; border-radius: 6px; }
+  .modal-date { font-size: 16px; }
+  .mtext { font-size: 13px; }
+
+  /* Strategy */
+  .funnel-row { flex-direction: column; gap: 6px; }
+  .f-arr { transform: rotate(90deg); text-align: center; align-self: center; padding: 2px 0; }
+  .split-cols { grid-template-columns: 1fr; }
+  .prod-col { border-right: none; border-bottom: 1px solid var(--border); }
+  .sw-grid { grid-template-columns: 1fr; }
+  .budget-grid { grid-template-columns: 1fr 1fr; }
+  .resp-grid { grid-template-columns: 1fr; }
+  .phase-header { padding: 14px; gap: 10px; }
+  .phase-name { font-size: 13px; }
+  .phase-badge { display: none; }
+}
+
+@media (max-width: 380px) {
+  .day-cell { min-height: 44px; padding: 3px 2px; }
+  .dn { font-size: 9px; }
+  .tdot { width: 6px; height: 6px; }
+}
+
+/* ── STRATEGY SECTIONS ── */
+.s-section { margin-bottom: 44px; }
+
+.funnel-row { display: flex; align-items: stretch; flex-wrap: wrap; gap: 0; }
+.f-step {
+  background: white; border: 2px solid var(--blue-mid); border-radius: 6px;
+  padding: 14px 12px; text-align: center; flex: 1; min-width: 110px;
+}
+.f-ico { font-size: 20px; margin-bottom: 6px; }
+.f-name { font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+.f-info { font-size: 11px; color: var(--muted); line-height: 1.4; }
+.f-arr { display: flex; align-items: center; padding: 0 4px; color: var(--blue); font-size: 18px; font-weight: 700; flex-shrink: 0; }
+
+.sw-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.sw-card { background: white; border: 2px solid var(--border); border-radius: 6px; padding: 16px; }
+.sw1 { border-top: 3px solid var(--blue); }
+.sw2 { border-top: 3px solid var(--both); }
+.sw3 { border-top: 3px solid #f97316; }
+.sw4 { border-top: 3px solid var(--expert); }
+.sw-num { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+.sw-name { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.sw-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* Fix resp-who and resp-icon */
+.resp-who { display: flex; align-items: center; gap: 8px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid var(--border); color: var(--text); }
+.resp-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+
+/* Fix phase colors for light theme */
+.p1 > .phase-header { border-left: 4px solid var(--blue); }
+.p2 > .phase-header { border-left: 4px solid var(--both); }
+.p3 > .phase-header { border-left: 4px solid #f97316; }
+
+@media (max-width: 560px) {
+  .funnel-row { flex-direction: column; }
+  .f-arr { transform: rotate(90deg); text-align: center; align-self: center; }
+}
+
+/* ── DASHBOARD ── */
+.db-section { margin-bottom: 36px; }
+.db-counters { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.db-card { background: white; border: 2px solid var(--border); border-radius: 6px; padding: 18px; }
+.db-card.db-main { border-color: var(--blue); }
+.db-card-label { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+.db-card-num { font-family: 'Montserrat', sans-serif; font-size: 36px; font-weight: 900; color: var(--blue); line-height: 1; margin-bottom: 4px; }
+.db-card.db-days .db-card-num { color: var(--text); }
+.db-card-sub { font-size: 12px; color: var(--muted); margin-bottom: 10px; font-weight: 600; }
+.db-pbar { height: 4px; background: var(--blue-mid); border-radius: 2px; overflow: hidden; }
+.db-pfill { height: 100%; background: var(--blue); border-radius: 2px; transition: width 0.5s; }
+
+.db-today-wrap { display: flex; flex-direction: column; gap: 8px; }
+.db-today-task { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; background: white; border: 2px solid var(--border); border-radius: 6px; }
+.db-today-task.prod { border-left: 4px solid var(--prod); }
+.db-today-task.expert { border-left: 4px solid var(--expert); }
+.db-today-task.both { border-left: 4px solid var(--both); }
+.db-today-role { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 3px; }
+.db-today-task.prod .db-today-role { color: var(--prod); }
+.db-today-task.expert .db-today-role { color: var(--expert); }
+.db-today-task.both .db-today-role { color: var(--both); }
+.db-today-text { font-size: 14px; color: var(--text); line-height: 1.4; }
+.db-today-time { font-size: 11px; color: var(--muted); margin-top: 3px; font-weight: 600; }
+
+.db-empty { padding: 24px; background: white; border: 2px dashed var(--border); border-radius: 6px; color: var(--muted); font-size: 14px; text-align: center; line-height: 1.6; }
+
+.db-last-call-card { background: white; border: 2px solid var(--blue-mid); border-radius: 6px; padding: 20px; }
+.db-lc-date { font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.db-lc-who { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 12px; }
+.db-lc-agreements { font-size: 14px; color: var(--text); line-height: 1.6; white-space: pre-wrap; margin-bottom: 12px; }
+.db-lc-tasks-title { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.db-lc-task { display: flex; gap: 8px; font-size: 13px; color: var(--text); line-height: 1.4; margin-bottom: 6px; }
+.db-lc-task::before { content: '→'; color: var(--blue); font-weight: 700; flex-shrink: 0; }
+
+.db-phases { display: flex; flex-direction: column; gap: 8px; }
+.db-phase-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: white; border: 2px solid var(--border); border-radius: 6px; }
+.db-phase-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.db-phase-info { flex: 1; }
+.db-phase-name { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
+.db-phase-dates { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.db-phase-badge { font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+.db-phase-badge.active { background: var(--blue); color: white; }
+.db-phase-badge.done { background: #f0fdf4; color: var(--both); border: 1.5px solid var(--both); }
+.db-phase-badge.upcoming { background: var(--bg); color: var(--muted); border: 1.5px solid var(--border); }
+
+/* ── CALLS ── */
+.call-form { background: white; border: 2px solid var(--border); border-radius: 6px; padding: 24px; }
+.cf-row { display: grid; grid-template-columns: 180px 1fr; gap: 14px; margin-bottom: 14px; }
+.cf-flex { }
+.cf-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.cf-field:last-child { margin-bottom: 0; }
+.cf-label { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.cf-input { padding: 10px 12px; border: 2px solid var(--border); border-radius: 4px; font-family: 'Golos Text', sans-serif; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.18s; background: var(--bg); }
+.cf-input:focus { border-color: var(--blue); background: white; }
+.cf-textarea { padding: 10px 12px; border: 2px solid var(--border); border-radius: 4px; font-family: 'Golos Text', sans-serif; font-size: 14px; color: var(--text); outline: none; resize: vertical; min-height: 100px; line-height: 1.6; transition: border-color 0.18s; background: var(--bg); }
+.cf-textarea:focus { border-color: var(--blue); background: white; }
+.cf-tasks-area { min-height: 120px; }
+.cf-submit { margin-top: 16px; padding: 12px 24px; background: var(--blue); border: none; border-radius: 4px; color: white; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.18s; }
+.cf-submit:hover { background: var(--blue-dark); }
+
+.call-card { background: white; border: 2px solid var(--border); border-radius: 6px; padding: 20px; margin-bottom: 10px; position: relative; }
+.call-card.latest { border-color: var(--blue); }
+.call-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.call-card-date { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; color: var(--blue); }
+.call-card-who { font-size: 13px; color: var(--muted); }
+.call-latest-tag { font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; background: var(--blue); color: white; padding: 2px 7px; border-radius: 3px; text-transform: uppercase; margin-left: auto; }
+.call-card-agreements { font-size: 14px; color: var(--text); line-height: 1.6; white-space: pre-wrap; margin-bottom: 12px; border-left: 3px solid var(--blue-mid); padding-left: 12px; }
+.call-card-tasks-label { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.call-card-task { display: flex; gap: 8px; font-size: 13px; color: var(--text); line-height: 1.4; margin-bottom: 5px; }
+.call-card-task::before { content: '→'; color: var(--blue); font-weight: 700; flex-shrink: 0; }
+.call-delete { position: absolute; top: 14px; right: 14px; background: none; border: none; color: #d1d5db; font-size: 16px; cursor: pointer; padding: 2px 6px; border-radius: 3px; transition: all 0.15s; }
+.call-delete:hover { color: #ef4444; background: #fef2f2; }
+
+.call-confirm { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding: 12px 14px; background: #fef2f2; border: 1.5px solid #fca5a5; border-radius: 6px; }
+.call-confirm span { font-size: 13px; color: #b91c1c; font-weight: 600; flex: 1; min-width: 140px; }
+.call-confirm-yes { padding: 7px 14px; background: #ef4444; border: none; border-radius: 4px; color: white; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; }
+.call-confirm-yes:hover { background: #dc2626; }
+.call-confirm-no { padding: 7px 14px; background: white; border: 1.5px solid #d1d5db; border-radius: 4px; color: #6b7280; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; }
+.call-confirm-no:hover { border-color: #9ca3af; }
+
+@media (max-width: 640px) {
+  .cf-row { grid-template-columns: 1fr; gap: 0; }
+  .db-counters { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── MODAL EDIT FEATURES ── */
+.modal-add-btn {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; margin-top: 10px; padding: 10px 14px;
+  background: var(--blue-light); border: 2px dashed var(--blue-mid);
+  border-radius: 6px; color: var(--blue); font-family: 'Montserrat', sans-serif;
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  cursor: pointer; transition: all 0.18s;
+}
+.modal-add-btn:hover { background: var(--blue); color: white; border-color: var(--blue); }
+
+.modal-add-form {
+  margin-top: 10px; padding: 14px;
+  background: var(--bg); border: 2px solid var(--blue-mid); border-radius: 6px;
+}
+.maf-row { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.maf-input {
+  flex: 1; min-width: 0; padding: 8px 10px;
+  border: 2px solid var(--border); border-radius: 4px;
+  font-family: 'Golos Text', sans-serif; font-size: 13px; color: var(--text);
+  outline: none; background: white;
+}
+.maf-input:focus { border-color: var(--blue); }
+.maf-select {
+  padding: 8px 10px; border: 2px solid var(--border); border-radius: 4px;
+  font-family: 'Golos Text', sans-serif; font-size: 13px; color: var(--text);
+  background: white; outline: none; cursor: pointer;
+}
+.maf-select:focus { border-color: var(--blue); }
+.maf-time { width: 80px; }
+.maf-btns { display: flex; gap: 6px; }
+.maf-save {
+  flex: 1; padding: 8px; background: var(--blue); border: none; border-radius: 4px;
+  color: white; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700;
+  text-transform: uppercase; cursor: pointer; transition: background 0.18s;
+}
+.maf-save:hover { background: var(--blue-dark); }
+.maf-cancel {
+  padding: 8px 12px; background: white; border: 1.5px solid var(--border);
+  border-radius: 4px; color: var(--muted); font-family: 'Montserrat', sans-serif;
+  font-size: 12px; font-weight: 700; text-transform: uppercase; cursor: pointer;
+}
+
+.mtask-actions { display: flex; gap: 4px; margin-left: auto; flex-shrink: 0; }
+.mtask-del, .mtask-move {
+  width: 26px; height: 26px; border: none; border-radius: 4px;
+  font-size: 13px; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; transition: all 0.15s; background: transparent; color: #9ca3af;
+  flex-shrink: 0;
+}
+.mtask-del:hover { background: #fef2f2; color: #ef4444; }
+.mtask-move:hover { background: var(--blue-light); color: var(--blue); }
+
+.move-panel {
+  margin-top: 6px; padding: 10px 12px;
+  background: var(--blue-light); border: 2px solid var(--blue-mid); border-radius: 6px;
+}
+.move-panel label { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); display: block; margin-bottom: 6px; }
+.move-panel-row { display: flex; gap: 6px; align-items: center; }
+.move-date-input {
+  flex: 1; padding: 7px 10px; border: 2px solid var(--border); border-radius: 4px;
+  font-family: 'Golos Text', sans-serif; font-size: 13px; outline: none; background: white;
+}
+.move-date-input:focus { border-color: var(--blue); }
+.move-confirm {
+  padding: 7px 12px; background: var(--blue); border: none; border-radius: 4px;
+  color: white; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700;
+  text-transform: uppercase; cursor: pointer;
+}
+.move-confirm:hover { background: var(--blue-dark); }
+.move-cancel {
+  padding: 7px 10px; background: white; border: 1.5px solid var(--border);
+  border-radius: 4px; color: var(--muted); font-family: 'Montserrat', sans-serif;
+  font-size: 12px; cursor: pointer;
+}
+
+.mtask.custom-task { border-left: 3px solid var(--gold); }
+.custom-badge {
+  font-size: 9px; font-family: 'Montserrat', sans-serif; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold);
+  background: rgba(217,119,6,0.1); padding: 1px 5px; border-radius: 3px; margin-left: 4px;
+}
+
+/* PWA Install Banner */
+.pwa-banner {
+  display: none;
+  position: fixed; bottom: calc(20px + env(safe-area-inset-bottom, 0)); left: 50%;
+  transform: translateX(-50%);
+  background: white; border: 2px solid var(--blue); border-radius: 12px;
+  padding: 14px 20px; box-shadow: 0 8px 32px rgba(26,123,196,0.2);
+  z-index: 9999; max-width: 340px; width: calc(100% - 32px);
+  align-items: center; gap: 12px;
+}
+.pwa-banner.show { display: flex; }
+.pwa-banner-icon { font-size: 28px; flex-shrink: 0; }
+.pwa-banner-text { flex: 1; }
+.pwa-banner-title { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.pwa-banner-sub { font-size: 11px; color: var(--muted); line-height: 1.4; }
+.pwa-banner-close { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 2px; flex-shrink: 0; }
+.ios-install-hint {
+  display: none;
+  position: fixed; bottom: calc(16px + env(safe-area-inset-bottom, 0)); left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a2e; color: white;
+  border-radius: 12px; padding: 14px 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  z-index: 9999; max-width: 320px; width: calc(100% - 32px);
+  font-size: 13px; line-height: 1.6; text-align: center;
+}
+.ios-install-hint.show { display: block; }
+.ios-hint-close { display: block; margin-top: 10px; color: #6c8fff; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; background: none; border: none; }
+
+.sync-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #d1d5db; transition: background 0.3s;
+  flex-shrink: 0;
+}
+.sync-dot.synced { background: #10b981; }
+.sync-dot.syncing { background: #f59e0b; animation: blink 0.8s infinite; }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* ── DOCS ── */
+.upload-zone {
+  border: 2px dashed var(--blue-mid); border-radius: 6px;
+  padding: 32px 20px; text-align: center; cursor: pointer;
+  background: var(--blue-light); transition: all 0.18s;
+}
+.upload-zone:hover, .upload-zone.drag-over { border-color: var(--blue); background: #daeef8; }
+.upload-icon { font-size: 36px; margin-bottom: 8px; }
+.upload-text { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; color: var(--blue); margin-bottom: 4px; }
+.upload-sub { font-size: 12px; color: var(--muted); }
+.upload-prog-bar { height: 6px; background: var(--blue-mid); border-radius: 3px; overflow: hidden; margin: 12px 0 6px; }
+.upload-prog-fill { height: 100%; background: var(--blue); border-radius: 3px; transition: width 0.3s; width: 0%; }
+.upload-prog-text { font-size: 12px; color: var(--muted); font-family: 'Montserrat', sans-serif; font-weight: 600; text-align: center; }
+
+.doc-card {
+  display: flex; align-items: center; gap: 14px;
+  background: white; border: 2px solid var(--border);
+  border-radius: 6px; padding: 16px 18px; margin-bottom: 8px;
+  transition: border-color 0.15s; position: relative;
+}
+.doc-card:hover { border-color: var(--blue); }
+.doc-icon { font-size: 28px; flex-shrink: 0; }
+.doc-info { flex: 1; min-width: 0; }
+.doc-name { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.doc-size { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+.doc-comment { font-size: 12px; color: var(--muted); margin-bottom: 3px; }
+.doc-date { font-size: 11px; color: var(--blue-mid); font-family: 'Montserrat', sans-serif; font-weight: 600; }
+.doc-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.doc-open {
+  padding: 9px 18px; background: var(--blue); border: none; border-radius: 4px;
+  color: white; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; white-space: nowrap;
+  text-decoration: none; display: inline-block; transition: background 0.18s;
+}
+.doc-open:hover { background: var(--blue-dark); }
+.doc-del {
+  position: absolute; top: 10px; right: 10px;
+  background: none; border: none; color: #d1d5db; font-size: 14px;
+  cursor: pointer; padding: 3px 6px; border-radius: 3px; transition: all 0.15s;
+}
+.doc-del:hover { color: #ef4444; background: #fef2f2; }
+@media (max-width: 640px) {
+  .doc-card { flex-wrap: wrap; gap: 10px; }
+  .doc-open { width: 100%; text-align: center; }
+}
+
+/* ── DOCS ── */
+.doc-card { background: white; border: 2px solid var(--border); border-radius: 6px; padding: 18px 20px; margin-bottom: 10px; position: relative; }
+.doc-card-header { display: flex; align-items: center; gap: 14px; }
+.doc-icon { font-size: 28px; flex-shrink: 0; }
+.doc-name { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.doc-comment { font-size: 12px; color: var(--muted); }
+.doc-open-btn { display: inline-block; padding: 8px 16px; background: var(--blue); color: white; border-radius: 4px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; flex-shrink: 0; transition: background 0.18s; }
+.doc-open-btn:hover { background: var(--blue-dark); }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="nav-logo">
+    Запуск<span>Карьерный коучинг · 2026</span>
+  </div>
+  <div class="sync-dot" id="syncDot" title="Синхронизация"></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('strategy', this)">📋 Стратегия</button>
+    <button class="nav-tab" onclick="showPage('calendar', this)">📅 Календарь</button>
+    <button class="nav-tab" onclick="showPage('dashboard', this)">📊 Дашборд</button>
+    <button class="nav-tab" onclick="showPage('calls', this)">💬 Созвоны</button>
+    <button class="nav-tab" onclick="showPage('docs', this)">📁 Документы</button>
+  </div>
+  <button class="burger" onclick="toggleMenu()" id="burger">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-tab active" onclick="showPage('strategy', this); toggleMenu()">📋 Стратегия</button>
+  <button class="mobile-tab" onclick="showPage('calendar', this); toggleMenu()">📅 Календарь</button>
+  <button class="mobile-tab" onclick="showPage('dashboard', this); toggleMenu()">📊 Дашборд</button>
+  <button class="mobile-tab" onclick="showPage('calls', this); toggleMenu()">💬 Созвоны</button>
+  <button class="mobile-tab" onclick="showPage('docs', this); toggleMenu()">📁 Документы</button>
+</div>
+
+<!-- ══════════════ STRATEGY PAGE ══════════════ -->
+<div class="page active" id="page-strategy">
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="hero-tag">Продюсерская стратегия · 2026</div>
+      <h2>Стратегия запуска</h2>
+      <div class="hero-sub">22 февраля — 2 мая · Telegram · Яндекс Директ</div>
+    </div>
+  </div>
+  <div class="wrap">
+<!-- FUNNEL -->
+<div class="s-section">
+  <div class="section-title">Воронка продаж</div>
+  <div class="funnel-row">
+    <div class="f-step"><div class="f-ico">📣</div><div class="f-name">Реклама</div><div class="f-info">Яндекс Директ · 150 000 ₽</div></div>
+    <div class="f-arr">→</div>
+    <div class="f-step"><div class="f-ico">🌐</div><div class="f-name">Лендинг</div><div class="f-info">Одностраничный сайт с оффером</div></div>
+    <div class="f-arr">→</div>
+    <div class="f-step"><div class="f-ico">📲</div><div class="f-name">Telegram</div><div class="f-info">Канал ~1500 подписчиков</div></div>
+    <div class="f-arr">→</div>
+    <div class="f-step"><div class="f-ico">🎬</div><div class="f-name">Видео-серия</div><div class="f-info">3 видео × 10 мин в закрепе</div></div>
+    <div class="f-arr">→</div>
+    <div class="f-step"><div class="f-ico">🔥</div><div class="f-name">Прогрев</div><div class="f-info">3–4 поста в неделю</div></div>
+    <div class="f-arr">→</div>
+    <div class="f-step"><div class="f-ico">🎯</div><div class="f-name">Продажи</div><div class="f-info">4 окна продаж</div></div>
+  </div>
+</div>
+
+<!-- SALES WINDOWS -->
+<div class="s-section">
+  <div class="section-title">Окна продаж</div>
+  <div class="sw-grid">
+    <div class="sw-card sw1">
+      <div class="sw-num">ОКНО 01</div>
+      <div class="sw-name">Видео-воронка в закрепе</div>
+      <div class="sw-desc">Человек смотрит 3 видео и сразу оставляет заявку. Самые горячие лиды.</div>
+    </div>
+    <div class="sw-card sw2">
+      <div class="sw-num">ОКНО 02</div>
+      <div class="sw-name">Бесплатный интенсив</div>
+      <div class="sw-desc">Регистрация через бота. Анкета в конце. Созвон с коучем 30 мин в Zoom.</div>
+    </div>
+    <div class="sw-card sw3">
+      <div class="sw-num">ОКНО 03</div>
+      <div class="sw-name">Дополнительный интерактив</div>
+      <div class="sw-desc">Механику определим по итогам интенсива. Для тех кто был, но не купил.</div>
+    </div>
+    <div class="sw-card sw4">
+      <div class="sw-num">ОКНО 04</div>
+      <div class="sw-name">Открытые продажи</div>
+      <div class="sw-desc">Пост в канале с ограниченными местами и жёстким дедлайном.</div>
+    </div>
+  </div>
+</div>
+
+<!-- HORIZONTAL TIMELINE -->
+<div class="htimeline-section">
+  <div class="section-title">Таймлайн запуска</div>
+  <div class="htimeline-scroll" id="htScroll">
+    <div class="htimeline">
+
+      <div class="ht-week">
+        <div class="ht-dot-wrap"><div class="ht-dot today" style="background:var(--accent1)"></div></div>
+        <div class="ht-content">
+          <div class="ht-week-label">Неделя 1</div>
+          <div class="ht-dates">22–28 фев</div>
+          <div class="ht-phase-tag" style="background:rgba(108,143,255,0.15);color:var(--accent1)">Фундамент</div>
+          <div class="ht-tasks">
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent1)">●</span>Созвон с коучем</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent1)">●</span>Анализ конкурентов</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent1)">●</span>Портреты клиента</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent1)">●</span>Созвон с таргетологом</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent1)">●</span>Разработка продукта</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent1)">●</span>Оффер и УТП + ТЗ сайта</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-week">
+        <div class="ht-dot-wrap"><div class="ht-dot" style="background:var(--accent1)"></div></div>
+        <div class="ht-content">
+          <div class="ht-week-label">Неделя 2</div>
+          <div class="ht-dates">1–7 мар</div>
+          <div class="ht-phase-tag" style="background:rgba(108,143,255,0.15);color:var(--accent1)">Фундамент</div>
+          <div class="ht-tasks">
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent1)">●</span>Упаковка канала</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent1)">●</span>Контент-план 6 нед</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent1)">●</span>Сайт в разработке</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent1)">●</span>3 видео × 10 мин</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent1)">●</span>Первые 7–8 постов</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent1)">●</span>Приёмка сайта</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-week">
+        <div class="ht-dot-wrap"><div class="ht-dot" style="background:var(--accent3)"></div></div>
+        <div class="ht-content">
+          <div class="ht-week-label">Неделя 3</div>
+          <div class="ht-dates">9–14 мар</div>
+          <div class="ht-phase-tag" style="background:rgba(52,211,153,0.15);color:var(--accent3)">Трафик</div>
+          <div class="ht-tasks">
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>🚀 Запуск Директ</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Первый пост в канале</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Разбор с таргетологом</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-week">
+        <div class="ht-dot-wrap"><div class="ht-dot" style="background:var(--accent3)"></div></div>
+        <div class="ht-content">
+          <div class="ht-week-label">Неделя 4</div>
+          <div class="ht-dates">16–21 мар</div>
+          <div class="ht-phase-tag" style="background:rgba(52,211,153,0.15);color:var(--accent3)">Трафик</div>
+          <div class="ht-tasks">
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Оптимизация кампаний</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Личная история коуча</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Анализ вовлечённости</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-week">
+        <div class="ht-dot-wrap"><div class="ht-dot" style="background:var(--accent3)"></div></div>
+        <div class="ht-content">
+          <div class="ht-week-label">Неделя 5</div>
+          <div class="ht-dates">23–28 мар</div>
+          <div class="ht-phase-tag" style="background:rgba(52,211,153,0.15);color:var(--accent3)">Трафик</div>
+          <div class="ht-tasks">
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Разбор ~50–60к потрачено</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Корректировка портретов</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Вовлекающий пост-опрос</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-week">
+        <div class="ht-dot-wrap"><div class="ht-dot" style="background:var(--accent3)"></div></div>
+        <div class="ht-content">
+          <div class="ht-week-label">Неделя 6</div>
+          <div class="ht-dates">30 мар–4 апр</div>
+          <div class="ht-phase-tag" style="background:rgba(52,211,153,0.15);color:var(--accent3)">Трафик</div>
+          <div class="ht-tasks">
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Подготовка интенсива</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Разбор ~100к потрачено</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Контент для бота</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-week">
+        <div class="ht-dot-wrap"><div class="ht-dot" style="background:var(--accent3)"></div></div>
+        <div class="ht-content">
+          <div class="ht-week-label">Неделя 7</div>
+          <div class="ht-dates">6–11 апр</div>
+          <div class="ht-phase-tag" style="background:rgba(52,211,153,0.15);color:var(--accent3)">Прогрев</div>
+          <div class="ht-tasks">
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>🤖 Бот готов</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Анонс даты интенсива</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Активный прогрев</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-week">
+        <div class="ht-dot-wrap"><div class="ht-dot" style="background:var(--accent3)"></div></div>
+        <div class="ht-content">
+          <div class="ht-week-label">Неделя 8</div>
+          <div class="ht-dates">13–18 апр</div>
+          <div class="ht-phase-tag" style="background:rgba(52,211,153,0.15);color:var(--accent3)">Прогрев</div>
+          <div class="ht-tasks">
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>🛑 Трафик стоп</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Регистрация на интенсив</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Видео-анонс коуча</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent3)">●</span>Подготовка анкеты</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-week">
+        <div class="ht-dot-wrap"><div class="ht-dot" style="background:var(--accent4)"></div></div>
+        <div class="ht-content">
+          <div class="ht-week-label">Неделя 9</div>
+          <div class="ht-dates">20–25 апр</div>
+          <div class="ht-phase-tag" style="background:rgba(249,115,22,0.15);color:var(--accent4)">Продажи</div>
+          <div class="ht-tasks">
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent4)">●</span>Финальный прогрев</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent4)">●</span>🎓 Интенсив + анкета</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--accent4)">●</span>Созвоны в Zoom 30 мин</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ht-week">
+        <div class="ht-dot-wrap"><div class="ht-dot" style="background:var(--gold)"></div></div>
+        <div class="ht-content">
+          <div class="ht-week-label">Неделя 10</div>
+          <div class="ht-dates">27 апр–2 мая</div>
+          <div class="ht-phase-tag" style="background:rgba(251,191,36,0.15);color:var(--gold)">Допродажи</div>
+          <div class="ht-tasks">
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--gold)">●</span>Окно продаж №3</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--gold)">●</span>💰 Открытые продажи</div>
+            <div class="ht-task"><span class="ht-task-bullet" style="color:var(--gold)">●</span>Закрытие запуска</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+<!-- TIMELINE -->
+<div class="timeline-section">
+  <div class="section-title">Детали по этапам</div>
+  <div class="timeline">
+
+    <!-- ЭТАП 1 -->
+    <div class="phase p1 open">
+      <div class="phase-header" onclick="toggle(this)">
+        <div class="phase-dot"></div>
+        <div class="phase-meta">
+          <div class="phase-name">Этап 1 — Фундамент</div>
+          <div class="phase-dates">22 февраля — 7 марта · Недели 1–2</div>
+        </div>
+        <div class="phase-badge">Сейчас</div>
+        <div class="phase-chevron">▼</div>
+      </div>
+      <div class="phase-body">
+
+        <div class="split-week">
+          <div class="split-week-title"><span class="split-wnum">Неделя 1</span><span class="split-wdates">22 (вс) — 28 (сб) февраля</span></div>
+          <div class="split-cols">
+            <div class="split-col prod-col">
+              <div class="split-role-label prod-label">🎯 Продюсер</div>
+              <div class="stask"><span class="stask-day">22 вс</span><span class="stask-time">~1 ч</span><span class="stask-text">Созвон с коучем, фиксируем договорённости и дедлайны</span></div>
+              <div class="stask"><span class="stask-day">23–24 пн-вт</span><span class="stask-time">~4 ч</span><span class="stask-text">Анализ 10–15 конкурентов + построение 2–3 портретов клиента. Вт 16:00 созвон с таргетологом</span></div>
+              <div class="stask"><span class="stask-day">27 пт</span><span class="stask-time">~2 ч</span><span class="stask-text">Формулируем оффер и УТП. Передаём ТЗ разработчику сайта</span></div>
+            </div>
+            <div class="split-col expert-col">
+              <div class="split-role-label expert-label">🎤 Эксперт</div>
+              <div class="stask"><span class="stask-day">22 вс</span><span class="stask-time">~1 ч</span><span class="stask-text">Созвон с продюсером — фиксируем условия работы</span></div>
+              <div class="stask"><span class="stask-day">25–26 ср-чт</span><span class="stask-time">~2 ч</span><span class="stask-text">Встреча с продюсером: фиксируем формат, длительность, цену и состав наставничества</span></div>
+              <div class="stask"><span class="stask-day">27 пт</span><span class="stask-time">~1 ч</span><span class="stask-text">Согласовываем финальный оффер и УТП</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-week">
+          <div class="split-week-title"><span class="split-wnum">Неделя 2</span><span class="split-wdates">1 (вс) — 7 (сб) марта · 8 марта — праздник</span></div>
+          <div class="split-cols">
+            <div class="split-col prod-col">
+              <div class="split-role-label prod-label">🎯 Продюсер</div>
+              <div class="stask"><span class="stask-day">2–3 пн-вт</span><span class="stask-time">~3 ч</span><span class="stask-text">Упаковка Telegram канала: описание, закреп, аватарка, обложка</span></div>
+              <div class="stask"><span class="stask-day">2–3 пн-вт</span><span class="stask-time">~3 ч</span><span class="stask-text">Контент-план на 6 недель: рубрики, темы, даты</span></div>
+              <div class="stask"><span class="stask-day">4–5 ср-чт</span><span class="stask-time">~2 ч</span><span class="stask-text">Переформатирование постов, монтаж и обрезка 3 видео</span></div>
+              <div class="stask"><span class="stask-day">6 пт</span><span class="stask-time">~2 ч</span><span class="stask-text">Приёмка сайта, финальный чеклист перед запуском трафика</span></div>
+            </div>
+            <div class="split-col expert-col">
+              <div class="split-role-label expert-label">🎤 Эксперт</div>
+              <div class="stask"><span class="stask-day">2–5 пн-чт</span><span class="stask-time">~3 ч</span><span class="stask-text">Написать первые 7–8 постов по темам из контент-плана</span></div>
+              <div class="stask"><span class="stask-day">4–5 ср-чт</span><span class="stask-time">~3 ч</span><span class="stask-text">Записать 3 видео × 10 мин для закрепа (презентация + запись экрана)</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ЭТАП 2 -->
+    <div class="phase p2">
+      <div class="phase-header" onclick="toggle(this)">
+        <div class="phase-dot"></div>
+        <div class="phase-meta">
+          <div class="phase-name">Этап 2 — Трафик и прогрев</div>
+          <div class="phase-dates">9 марта — 18 апреля · Недели 3–8</div>
+        </div>
+        <div class="phase-badge">150 000 ₽ на Директ</div>
+        <div class="phase-chevron">▼</div>
+      </div>
+      <div class="phase-body">
+
+        <div class="split-week">
+          <div class="split-week-title"><span class="split-wnum">Неделя 3</span><span class="split-wdates">9 (пн) — 14 (сб) марта</span></div>
+          <div class="split-cols">
+            <div class="split-col prod-col">
+              <div class="split-role-label prod-label">🎯 Продюсер</div>
+              <div class="stask"><span class="stask-day">9 пн</span><span class="stask-time">~1 ч</span><span class="stask-text">Финальная проверка: сайт, канал, закреп, видео — всё работает</span></div>
+              <div class="stask"><span class="stask-day">10 вт</span><span class="stask-time">~30 мин</span><span class="stask-text">Даём старт таргетологу. Публикуем первый пост</span></div>
+              <div class="stask"><span class="stask-day">13 пт</span><span class="stask-time">~1 ч</span><span class="stask-text">Разбор с таргетологом: цена клика, цена подписчика, первые выводы</span></div>
+            </div>
+            <div class="split-col expert-col">
+              <div class="split-role-label expert-label">🎤 Эксперт</div>
+              <div class="stask"><span class="stask-day">Пн-пт</span><span class="stask-time">~2 ч/нед</span><span class="stask-text">Писать посты по запросу продюсера (3–4 поста в неделю). Основная задача на весь период трафика</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-week">
+          <div class="split-week-title"><span class="split-wnum">Неделя 4</span><span class="split-wdates">16 (пн) — 21 (сб) марта</span></div>
+          <div class="split-cols">
+            <div class="split-col prod-col">
+              <div class="split-role-label prod-label">🎯 Продюсер</div>
+              <div class="stask"><span class="stask-day">16 пн</span><span class="stask-time">~1 ч</span><span class="stask-text">Координация с таргетологом: оптимизация кампаний по данным первой недели</span></div>
+              <div class="stask"><span class="stask-day">19–20 чт-пт</span><span class="stask-time">~1 ч</span><span class="stask-text">Анализ вовлечённости постов, корректировка контент-плана</span></div>
+            </div>
+            <div class="split-col expert-col">
+              <div class="split-role-label expert-label">🎤 Эксперт</div>
+              <div class="stask"><span class="stask-day">17–18 вт-ср</span><span class="stask-time">~1.5 ч</span><span class="stask-text">Написать ключевой пост — личная история: откуда пришёл, почему карьерный коучинг</span></div>
+              <div class="stask"><span class="stask-day">Пн-пт</span><span class="stask-time">~2 ч/нед</span><span class="stask-text">Посты по контент-плану</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-week">
+          <div class="split-week-title"><span class="split-wnum">Неделя 5</span><span class="split-wdates">23 (пн) — 28 (сб) марта</span></div>
+          <div class="split-cols">
+            <div class="split-col prod-col">
+              <div class="split-role-label prod-label">🎯 Продюсер</div>
+              <div class="stask"><span class="stask-day">23 пн</span><span class="stask-time">~1 ч</span><span class="stask-text">Разбор с таргетологом. ~50–60к потрачено — проверяем стоимость подписчика</span></div>
+              <div class="stask"><span class="stask-day">24–25 вт-ср</span><span class="stask-time">~1 ч</span><span class="stask-text">Корректировка портретов клиента по реальным данным трафика</span></div>
+            </div>
+            <div class="split-col expert-col">
+              <div class="split-role-label expert-label">🎤 Эксперт</div>
+              <div class="stask"><span class="stask-day">26–27 чт-пт</span><span class="stask-time">~30 мин</span><span class="stask-text">Написать вовлекающий пост-вопрос к аудитории про их карьерные боли</span></div>
+              <div class="stask"><span class="stask-day">Пн-пт</span><span class="stask-time">~2 ч/нед</span><span class="stask-text">Посты по контент-плану</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-week">
+          <div class="split-week-title"><span class="split-wnum">Неделя 6</span><span class="split-wdates">30 (пн) марта — 4 (сб) апреля</span></div>
+          <div class="split-cols">
+            <div class="split-col prod-col">
+              <div class="split-role-label prod-label">🎯 Продюсер</div>
+              <div class="stask"><span class="stask-day">2–3 ср-чт</span><span class="stask-time">~1 ч</span><span class="stask-text">Разбор с таргетологом. ~100к потрачено. Решаем как расходовать остаток</span></div>
+              <div class="stask"><span class="stask-day">2–3 ср-чт</span><span class="stask-time">~2 ч</span><span class="stask-text">Прописываем контент для бота (цепочка сообщений перед интенсивом)</span></div>
+            </div>
+            <div class="split-col expert-col">
+              <div class="split-role-label expert-label">🎤 Эксперт</div>
+              <div class="stask"><span class="stask-day">30 пн</span><span class="stask-time">~3 ч</span><span class="stask-text">⚠️ Начать делать структуру и презентацию интенсива — приоритет недели</span></div>
+              <div class="stask"><span class="stask-day">Пн-пт</span><span class="stask-time">~2 ч/нед</span><span class="stask-text">Посты по контент-плану</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-week">
+          <div class="split-week-title"><span class="split-wnum">Неделя 7</span><span class="split-wdates">6 (пн) — 11 (сб) апреля</span></div>
+          <div class="split-cols">
+            <div class="split-col prod-col">
+              <div class="split-role-label prod-label">🎯 Продюсер</div>
+              <div class="stask"><span class="stask-day">6 пн</span><span class="stask-time">~2 ч</span><span class="stask-text">Бот готов и запущен. Публикуем анонс-пост с датой интенсива</span></div>
+              <div class="stask"><span class="stask-day">9–10 чт-пт</span><span class="stask-time">~1 ч</span><span class="stask-text">Финальная проверка перед остановкой трафика</span></div>
+            </div>
+            <div class="split-col expert-col">
+              <div class="split-role-label expert-label">🎤 Эксперт</div>
+              <div class="stask"><span class="stask-day">9–10 чт-пт</span><span class="stask-time">~2 ч</span><span class="stask-text">⚠️ Финализировать презентацию интенсива — дедлайн</span></div>
+              <div class="stask"><span class="stask-day">Пн-пт</span><span class="stask-time">~2 ч/нед</span><span class="stask-text">Посты по контент-плану</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-week">
+          <div class="split-week-title"><span class="split-wnum">Неделя 8</span><span class="split-wdates">13 (пн) — 18 (сб) апреля</span></div>
+          <div class="split-cols">
+            <div class="split-col prod-col">
+              <div class="split-role-label prod-label">🎯 Продюсер</div>
+              <div class="stask"><span class="stask-day">13 пн</span><span class="stask-time">~30 мин</span><span class="stask-text">Останавливаем трафик. Публикуем анонс интенсива с регистрацией через бота</span></div>
+              <div class="stask"><span class="stask-day">16–17 чт-пт</span><span class="stask-time">~1 ч</span><span class="stask-text">Следим за регистрациями. Публикуем напоминания. Готовим анкету</span></div>
+            </div>
+            <div class="split-col expert-col">
+              <div class="split-role-label expert-label">🎤 Эксперт</div>
+              <div class="stask"><span class="stask-day">14–15 вт-ср</span><span class="stask-time">~30 мин</span><span class="stask-text">Записать короткое видео-анонс: почему стоит прийти на интенсив</span></div>
+              <div class="stask"><span class="stask-day">Пн-пт</span><span class="stask-time">~1 ч/нед</span><span class="stask-text">Активный прогрев постами к интенсиву</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ЭТАП 3 -->
+    <div class="phase p3">
+      <div class="phase-header" onclick="toggle(this)">
+        <div class="phase-dot"></div>
+        <div class="phase-meta">
+          <div class="phase-name">Этап 3 — Интенсив и продажи</div>
+          <div class="phase-dates">20 апреля — 2 мая · Недели 9–10</div>
+        </div>
+        <div class="phase-badge">Деньги</div>
+        <div class="phase-chevron">▼</div>
+      </div>
+      <div class="phase-body">
+
+        <div class="split-week">
+          <div class="split-week-title"><span class="split-wnum">Неделя 9</span><span class="split-wdates">20 (пн) — 25 (сб) апреля</span></div>
+          <div class="split-cols">
+            <div class="split-col prod-col">
+              <div class="split-role-label prod-label">🎯 Продюсер</div>
+              <div class="stask"><span class="stask-day">20 пн</span><span class="stask-time">~30 мин</span><span class="stask-text">Финальное напоминание с датой и временем интенсива</span></div>
+              <div class="stask"><span class="stask-day">21–22 вт-ср</span><span class="stask-time">~2 ч</span><span class="stask-text">Техническое сопровождение интенсива: трансляция, чат, анкета</span></div>
+              <div class="stask"><span class="stask-day">23–24 чт-пт</span><span class="stask-time">~1 ч</span><span class="stask-text">Пост-благодарность. Контролируем что коуч выходит на созвоны</span></div>
+            </div>
+            <div class="split-col expert-col">
+              <div class="split-role-label expert-label">🎤 Эксперт</div>
+              <div class="stask"><span class="stask-day">21–22 вт-ср</span><span class="stask-time">~2 ч</span><span class="stask-text">Провести интенсив. В конце попросить заполнить анкету</span></div>
+              <div class="stask"><span class="stask-day">23–24 чт-пт</span><span class="stask-time">~4–8 ч</span><span class="stask-text">⚡ Созвоны 30 мин в Zoom с каждым кто заполнил анкету. Закрытие на наставничество</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-week">
+          <div class="split-week-title"><span class="split-wnum">Неделя 10</span><span class="split-wdates">27 (пн) апреля — 2 (сб) мая</span></div>
+          <div class="split-cols">
+            <div class="split-col prod-col">
+              <div class="split-role-label prod-label">🎯 Продюсер</div>
+              <div class="stask"><span class="stask-day">27 пн</span><span class="stask-time">~1 ч</span><span class="stask-text">Запуск окна продаж №3 — механику определим позже</span></div>
+              <div class="stask"><span class="stask-day">1 мая пт</span><span class="stask-time">~30 мин</span><span class="stask-text">Пост с открытыми продажами и дедлайном. Закрываем запуск</span></div>
+            </div>
+            <div class="split-col expert-col">
+              <div class="split-role-label expert-label">🎤 Эксперт</div>
+              <div class="stask"><span class="stask-day">27–29 пн-ср</span><span class="stask-time">~2–4 ч</span><span class="stask-text">Участие в активности окна №3. Личный диалог с заинтересованными</span></div>
+              <div class="stask"><span class="stask-day">1 мая пт</span><span class="stask-time">~1 ч</span><span class="stask-text">Финальные созвоны с теми кто ещё не принял решение</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<!-- BUDGET -->
+<div class="budget-section">
+  <div class="section-title">Бюджет</div>
+  <div class="budget-grid">
+    <div class="budget-card">
+      <div class="budget-label">Яндекс Директ</div>
+      <div class="budget-amount">150 000 <span>₽</span></div>
+      <div class="budget-note">~25 000 ₽/нед · 6 недель</div>
+    </div>
+    <div class="budget-card">
+      <div class="budget-label">Команда</div>
+      <div class="budget-amount">40 000 <span>₽</span></div>
+      <div class="budget-note">Разработчик сайта и др.</div>
+    </div>
+    <div class="budget-card">
+      <div class="budget-label">Резерв</div>
+      <div class="budget-amount">30 000 <span>₽</span></div>
+      <div class="budget-note">Непредвиденные расходы</div>
+    </div>
+    <div class="budget-card">
+      <div class="budget-label">Итого</div>
+      <div class="budget-amount">220 000 <span>₽</span></div>
+      <div class="budget-note">Общий бюджет запуска</div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- RESPONSIBLE -->
+<div class="resp-section">
+  <div class="section-title">Ответственные</div>
+  <div class="resp-grid">
+    <div class="resp-card">
+      <div class="resp-who">
+        <div class="resp-icon" style="background:rgba(108,143,255,0.15)">🎯</div>
+        Продюсер
+      </div>
+      <div class="resp-item">Стратегия и координация</div>
+      <div class="resp-item">Анализ конкурентов и рынка</div>
+      <div class="resp-item">Переформатирование постов</div>
+      <div class="resp-item">Монтаж видео-серии</div>
+      <div class="resp-item">Упаковка канала</div>
+      <div class="resp-item">Бот для регистрации</div>
+    </div>
+    <div class="resp-card">
+      <div class="resp-who">
+        <div class="resp-icon" style="background:rgba(167,139,250,0.15)">🎤</div>
+        Коуч
+      </div>
+      <div class="resp-item">Написание постов</div>
+      <div class="resp-item">Запись 3 видео для закрепа</div>
+      <div class="resp-item">Подготовка интенсива</div>
+      <div class="resp-item">Проведение интенсива</div>
+      <div class="resp-item">Созвоны с потенциальными клиентами</div>
+    </div>
+    <div class="resp-card">
+      <div class="resp-who">
+        <div class="resp-icon" style="background:rgba(52,211,153,0.15)">📊</div>
+        Таргетолог
+      </div>
+      <div class="resp-item">Настройка Яндекс Директ</div>
+      <div class="resp-item">Еженедельная оптимизация</div>
+      <div class="resp-item">Отчётность по трафику</div>
+    </div>
+    <div class="resp-card">
+      <div class="resp-who">
+        <div class="resp-icon" style="background:rgba(249,115,22,0.15)">💻</div>
+        Разработчик
+      </div>
+      <div class="resp-item">Лендинг (одностраничный сайт)</div>
+      <div class="resp-item">Срок: 1–7 марта</div>
+    </div>
+  </div>
+</div>
+
+
+  </div><!-- /wrap strategy -->
+</div><!-- /page-strategy -->
+
+<!-- ══════════════ CALENDAR PAGE ══════════════ -->
+<div class="page" id="page-calendar">
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="hero-tag">Интерактивный трекер задач</div>
+      <h2>Календарь задач</h2>
+      <div class="hero-sub">Нажми на задачу чтобы отметить выполненной · Прогресс сохраняется</div>
+    </div>
+  </div>
+  <div class="wrap">
+
+    <div class="cal-role-filter">
+      <button class="rf-btn act-all" id="btn-all" onclick="setRole('all')">👁 Все задачи</button>
+      <button class="rf-btn" id="btn-prod" onclick="setRole('prod')">🎯 Я продюсер</button>
+      <button class="rf-btn" id="btn-expert" onclick="setRole('expert')">🎤 Я эксперт</button>
+    </div>
+
+    <div class="cal-legend">
+      <div class="legend-item"><div class="ldot" style="background:var(--prod)"></div>Продюсер</div>
+      <div class="legend-item"><div class="ldot" style="background:var(--expert)"></div>Эксперт</div>
+      <div class="legend-item"><div class="ldot" style="background:var(--both)"></div>Вместе</div>
+      <div style="margin-left:auto;display:flex;gap:14px;flex-wrap:wrap">
+        <div class="legend-item"><div class="ldot" style="background:var(--blue)"></div>Фундамент</div>
+        <div class="legend-item"><div class="ldot" style="background:var(--both)"></div>Трафик</div>
+        <div class="legend-item"><div class="ldot" style="background:#f97316"></div>Продажи</div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="prog-label">Прогресс</div>
+      <div class="prog-bar-wrap"><div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div></div>
+      <div class="prog-text">Выполнено: <span id="doneN">0</span> / <span id="totalN">0</span></div>
+    </div>
+
+    <div class="month-nav">
+      <button class="nav-btn" onclick="prevMonth()">&#8592;</button>
+      <div class="month-title" id="monthTitle"></div>
+      <button class="nav-btn" onclick="nextMonth()">&#8594;</button>
+    </div>
+
+    <div class="phase-strip" id="phaseStrip"></div>
+    <div class="weekdays">
+      <div class="wd">Пн</div><div class="wd">Вт</div><div class="wd">Ср</div>
+      <div class="wd">Чт</div><div class="wd">Пт</div>
+      <div class="wd wknd">Сб</div><div class="wd wknd">Вс</div>
+    </div>
+    <div class="days-grid" id="daysGrid"></div>
+    <div class="mobile-cal-hint">Нажми на день чтобы увидеть задачи</div>
+
+  </div>
+</div>
+
+<!-- ══════════════ DASHBOARD PAGE ══════════════ -->
+<div class="page" id="page-dashboard">
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="hero-tag">Обзор проекта</div>
+      <h2>Дашборд</h2>
+      <div class="hero-sub">Текущий статус запуска · обновляется автоматически</div>
+    </div>
+  </div>
+  <div class="wrap">
+
+    <!-- COUNTERS -->
+    <div class="db-section">
+      <div class="section-title">Прогресс задач</div>
+      <div class="db-counters">
+        <div class="db-card db-main">
+          <div class="db-card-label">Всего выполнено</div>
+          <div class="db-card-num" id="db-total-done">0</div>
+          <div class="db-card-sub" id="db-total-sub">из 0 задач</div>
+          <div class="db-pbar"><div class="db-pfill" id="db-pfill" style="width:0%"></div></div>
+        </div>
+        <div class="db-card">
+          <div class="db-card-label">🎯 Задачи продюсера</div>
+          <div class="db-card-num" id="db-prod-done">0</div>
+          <div class="db-card-sub" id="db-prod-sub">из 0</div>
+          <div class="db-pbar"><div class="db-pfill" id="db-prod-fill" style="width:0%;background:var(--prod)"></div></div>
+        </div>
+        <div class="db-card">
+          <div class="db-card-label">🎤 Задачи эксперта</div>
+          <div class="db-card-num" id="db-expert-done">0</div>
+          <div class="db-card-sub" id="db-expert-sub">из 0</div>
+          <div class="db-pbar"><div class="db-pfill" id="db-expert-fill" style="width:0%;background:var(--expert)"></div></div>
+        </div>
+        <div class="db-card db-days">
+          <div class="db-card-label">До конца запуска</div>
+          <div class="db-card-num" id="db-days">—</div>
+          <div class="db-card-sub">дней осталось</div>
+        </div>
+        <div class="db-card db-days">
+          <div class="db-card-label">До интенсива</div>
+          <div class="db-card-num" id="db-intensive">—</div>
+          <div class="db-card-sub">дней осталось</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODAY TASKS -->
+    <div class="db-section">
+      <div class="section-title">Задачи на сегодня</div>
+      <div id="db-today-tasks" class="db-today-wrap">
+        <div class="db-empty">На сегодня задач нет — отдыхай 🎉</div>
+      </div>
+    </div>
+
+    <!-- LAST CALL -->
+    <div class="db-section">
+      <div class="section-title">Последний созвон</div>
+      <div id="db-last-call">
+        <div class="db-empty">Созвонов ещё не добавлено.<br>Перейди на вкладку <b>Созвоны</b> и добавь первый.</div>
+      </div>
+    </div>
+
+    <!-- PHASE STATUS -->
+    <div class="db-section">
+      <div class="section-title">Этапы запуска</div>
+      <div class="db-phases">
+        <div class="db-phase-row" id="dbph1">
+          <div class="db-phase-dot" style="background:var(--blue)"></div>
+          <div class="db-phase-info">
+            <div class="db-phase-name">Этап 1 — Фундамент</div>
+            <div class="db-phase-dates">22 фев — 7 мар</div>
+          </div>
+          <div class="db-phase-badge" id="dbph1-badge">—</div>
+        </div>
+        <div class="db-phase-row" id="dbph2">
+          <div class="db-phase-dot" style="background:var(--both)"></div>
+          <div class="db-phase-info">
+            <div class="db-phase-name">Этап 2 — Трафик и прогрев</div>
+            <div class="db-phase-dates">9 мар — 18 апр</div>
+          </div>
+          <div class="db-phase-badge" id="dbph2-badge">—</div>
+        </div>
+        <div class="db-phase-row" id="dbph3">
+          <div class="db-phase-dot" style="background:#f97316"></div>
+          <div class="db-phase-info">
+            <div class="db-phase-name">Этап 3 — Продажи</div>
+            <div class="db-phase-dates">20 апр — 2 мая</div>
+          </div>
+          <div class="db-phase-badge" id="dbph3-badge">—</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ CALLS PAGE ══════════════ -->
+<div class="page" id="page-calls">
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="hero-tag">История созвонов</div>
+      <h2>Созвоны</h2>
+      <div class="hero-sub">Фиксируй договорённости после каждой встречи</div>
+    </div>
+  </div>
+  <div class="wrap">
+
+    <!-- ADD CALL FORM -->
+    <div class="db-section">
+      <div class="section-title">Добавить созвон</div>
+      <div class="call-form">
+        <div class="cf-row">
+          <div class="cf-field">
+            <label class="cf-label">Дата</label>
+            <input type="date" id="cf-date" class="cf-input">
+          </div>
+          <div class="cf-field cf-flex">
+            <label class="cf-label">Участники</label>
+            <input type="text" id="cf-who" class="cf-input" placeholder="Продюсер + Коуч">
+          </div>
+        </div>
+        <div class="cf-field">
+          <label class="cf-label">О чём договорились</label>
+          <textarea id="cf-agreements" class="cf-textarea" placeholder="Например:&#10;— Коуч запишет видео до пятницы&#10;— Продюсер делает контент-план до среды&#10;— Решили повысить цену до 80к"></textarea>
+        </div>
+        <div class="cf-field">
+          <label class="cf-label">Задачи (каждая с новой строки)</label>
+          <textarea id="cf-tasks" class="cf-textarea cf-tasks-area" placeholder="Продюсер: упаковать канал до 3 марта&#10;Эксперт: написать 5 постов до пятницы&#10;Оба: согласовать цену на следующей встрече"></textarea>
+        </div>
+        <button class="cf-submit" onclick="addCall()">+ Добавить созвон</button>
+      </div>
+    </div>
+
+    <!-- CALLS LIST -->
+    <div class="db-section">
+      <div class="section-title">История</div>
+      <div id="calls-list">
+        <div class="db-empty">Созвонов ещё нет. Добавь первый выше.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-date" id="mDate"></div>
+    <div class="modal-phase" id="mPhase"></div>
+    <div class="modal-tasks" id="mTasks"></div>
+    <button class="modal-close" onclick="closeModal()">Закрыть</button>
+  </div>
+</div>
+
+<script>
+// ── NAV ──
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.mobile-tab').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  if (name === 'calendar') render();
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'calls') renderCalls();
+  if (name === 'docs') renderDocs();
+  if (name === 'docs') renderDocs();
+}
+
+function toggleMenu() {
+  var m = document.getElementById('mobileMenu');
+  m.classList.toggle('open');
+}
+
+// ── STRATEGY TOGGLE ──
+function toggle(header) {
+  var phase = header.parentElement;
+  phase.classList.toggle('open');
+}
+
+// ── STRATEGY TIMELINE DRAG ──
+var htScroll = document.getElementById('htScroll');
+if (htScroll) {
+  var isDown = false, startX, scrollLeft;
+  htScroll.addEventListener('mousedown', function(e){ isDown=true; startX=e.pageX-htScroll.offsetLeft; scrollLeft=htScroll.scrollLeft; });
+  htScroll.addEventListener('mouseleave', function(){ isDown=false; });
+  htScroll.addEventListener('mouseup', function(){ isDown=false; });
+  htScroll.addEventListener('mousemove', function(e){ if(!isDown)return; e.preventDefault(); htScroll.scrollLeft=scrollLeft-(e.pageX-htScroll.offsetLeft-startX)*1.5; });
+}
+
+// ── CALENDAR DATA ──
+var TASKS = {
+  '2026-02-22': [
+    {id:'a01',role:'both',text:'Созвон с коучем — фиксируем договорённости, дедлайны и условия работы',time:'~1 ч'}
+  ],
+  '2026-02-23': [
+    {id:'a02',role:'prod',text:'Начать анализ конкурентов: найти 10–15 карьерных коучей в Telegram и Instagram',time:'~2 ч'}
+  ],
+  '2026-02-24': [
+    {id:'a03',role:'prod',text:'Завершить анализ конкурентов — таблица: офферы, боли, цены, форматы',time:'~2 ч'},
+    {id:'a04',role:'prod',text:'Созвон с таргетологом в 16:00 — обсуждаем стратегию рекламы',time:'~1 ч'}
+  ],
+  '2026-02-25': [
+    {id:'a05',role:'prod',text:'Построить 2–3 портрета идеального клиента: возраст, боль, желание, возражение',time:'~2 ч'},
+    {id:'a06',role:'expert',text:'Прислать продюсеру мысли по аудитории — кто твои клиенты по опыту',time:'~30 мин'}
+  ],
+  '2026-02-26': [
+    {id:'a07',role:'both',text:'Встреча: разрабатываем продукт — формат наставничества, длительность, состав',time:'~1.5 ч'}
+  ],
+  '2026-02-27': [
+    {id:'a08',role:'both',text:'Финализировать продукт: цена, что входит, результат клиента на выходе',time:'~1 ч'},
+    {id:'a09',role:'prod',text:'Сформулировать оффер и УТП. Передать ТЗ разработчику сайта',time:'~1 ч'},
+    {id:'a10',role:'expert',text:'Согласовать финальный оффер и УТП',time:'~30 мин'}
+  ],
+  '2026-03-02': [
+    {id:'b01',role:'prod',text:'Упаковка Telegram канала: описание, аватарка, обложка',time:'~2 ч'}
+  ],
+  '2026-03-03': [
+    {id:'b02',role:'prod',text:'Написать закреплённый пост для канала',time:'~1 ч'},
+    {id:'b03',role:'expert',text:'Написать первые 2–3 поста по темам из контент-плана',time:'~1.5 ч'}
+  ],
+  '2026-03-04': [
+    {id:'b04',role:'prod',text:'Составить контент-план на 6 недель: рубрики, темы, даты публикаций',time:'~3 ч'},
+    {id:'b05',role:'expert',text:'Написать ещё 2–3 поста',time:'~1.5 ч'}
+  ],
+  '2026-03-05': [
+    {id:'b06',role:'expert',text:'Записать 3 видео x 10 мин для закрепа (презентация + запись экрана)',time:'~3 ч'},
+    {id:'b07',role:'expert',text:'Написать ещё 2 поста',time:'~1 ч'}
+  ],
+  '2026-03-06': [
+    {id:'b08',role:'prod',text:'Монтаж и обрезка 3 видео. Переформатировать посты от коуча',time:'~2 ч'},
+    {id:'b09',role:'prod',text:'Приёмка сайта. Финальный чеклист перед запуском трафика',time:'~2 ч'}
+  ],
+  '2026-03-09': [
+    {id:'c01',role:'prod',text:'Финальная проверка: сайт, канал, закреп, видео — всё работает',time:'~1 ч'}
+  ],
+  '2026-03-10': [
+    {id:'c02',role:'prod',text:'Даём старт таргетологу. Публикуем первый пост в канале',time:'~30 мин'}
+  ],
+  '2026-03-13': [
+    {id:'c03',role:'prod',text:'Разбор с таргетологом: цена клика, цена подписчика, первые выводы',time:'~1 ч'}
+  ],
+  '2026-03-16': [
+    {id:'c04',role:'prod',text:'Координация с таргетологом: оптимизация кампаний по данным первой недели',time:'~1 ч'}
+  ],
+  '2026-03-17': [
+    {id:'c05',role:'expert',text:'Написать ключевой пост — личная история: откуда пришёл, почему карьерный коучинг',time:'~1.5 ч'}
+  ],
+  '2026-03-19': [
+    {id:'c06',role:'prod',text:'Анализ вовлечённости постов — что заходит лучше, корректировка контент-плана',time:'~1 ч'}
+  ],
+  '2026-03-23': [
+    {id:'c07',role:'prod',text:'Разбор с таргетологом. ~50–60к потрачено — проверяем стоимость подписчика',time:'~1 ч'}
+  ],
+  '2026-03-24': [
+    {id:'c08',role:'prod',text:'Корректировка портретов клиента по реальным данным трафика',time:'~1 ч'}
+  ],
+  '2026-03-26': [
+    {id:'c09',role:'expert',text:'Написать вовлекающий пост-вопрос к аудитории про их карьерные боли',time:'~30 мин'}
+  ],
+  '2026-03-30': [
+    {id:'d01',role:'expert',text:'Начать делать структуру и презентацию интенсива — приоритет недели',time:'~3 ч'}
+  ],
+  '2026-04-02': [
+    {id:'d02',role:'prod',text:'Разбор с таргетологом. ~100к потрачено. Решаем как расходовать остаток',time:'~1 ч'},
+    {id:'d03',role:'prod',text:'Прописываем контент для бота (цепочка сообщений перед интенсивом)',time:'~2 ч'}
+  ],
+  '2026-04-06': [
+    {id:'d04',role:'prod',text:'Бот готов и запущен. Публикуем анонс-пост с датой интенсива',time:'~2 ч'}
+  ],
+  '2026-04-09': [
+    {id:'d05',role:'prod',text:'Финальная проверка перед остановкой трафика',time:'~1 ч'},
+    {id:'d06',role:'expert',text:'Финализировать презентацию интенсива — дедлайн',time:'~2 ч'}
+  ],
+  '2026-04-13': [
+    {id:'d07',role:'prod',text:'Останавливаем трафик. Публикуем анонс интенсива с регистрацией через бота',time:'~30 мин'}
+  ],
+  '2026-04-14': [
+    {id:'d08',role:'expert',text:'Записать короткое видео-анонс: почему стоит прийти на интенсив',time:'~30 мин'}
+  ],
+  '2026-04-16': [
+    {id:'d09',role:'prod',text:'Следим за регистрациями. Напоминания. Готовим анкету',time:'~1 ч'}
+  ],
+  '2026-04-20': [
+    {id:'e01',role:'prod',text:'Финальное напоминание с датой и временем интенсива',time:'~30 мин'}
+  ],
+  '2026-04-21': [
+    {id:'e02',role:'both',text:'Провести интенсив. В конце — анкета для участников',time:'~2 ч'},
+    {id:'e03',role:'prod',text:'Техническое сопровождение: трансляция, чат',time:'~2 ч'}
+  ],
+  '2026-04-23': [
+    {id:'e04',role:'prod',text:'Пост-благодарность участникам. Контролируем созвоны коуча',time:'~1 ч'},
+    {id:'e05',role:'expert',text:'Созвоны 30 мин в Zoom с теми кто заполнил анкету. Закрытие на наставничество',time:'~4–8 ч'}
+  ],
+  '2026-04-24': [
+    {id:'e06',role:'expert',text:'Продолжение созвонов с потенциальными клиентами',time:'~2–4 ч'}
+  ],
+  '2026-04-27': [
+    {id:'e07',role:'prod',text:'Запуск окна продаж №3 — механику определим позже',time:'~1 ч'},
+    {id:'e08',role:'expert',text:'Участие в активности окна №3. Личный диалог с заинтересованными',time:'~2 ч'}
+  ],
+  '2026-05-01': [
+    {id:'e09',role:'prod',text:'Публикуем пост с открытыми продажами и дедлайном. Закрываем запуск',time:'~30 мин'},
+    {id:'e10',role:'expert',text:'Финальные созвоны с теми кто ещё не принял решение',time:'~1 ч'}
+  ]
+};
+
+var PHASES = {};
+function ph(arr,p){arr.forEach(function(d){PHASES[d]=p;});}
+ph(['2026-02-22','2026-02-23','2026-02-24','2026-02-25','2026-02-26','2026-02-27','2026-02-28','2026-03-01','2026-03-02','2026-03-03','2026-03-04','2026-03-05','2026-03-06','2026-03-07'],'ph1');
+ph(['2026-03-09','2026-03-10','2026-03-11','2026-03-12','2026-03-13','2026-03-14','2026-03-16','2026-03-17','2026-03-18','2026-03-19','2026-03-20','2026-03-21','2026-03-23','2026-03-24','2026-03-25','2026-03-26','2026-03-27','2026-03-28','2026-03-30','2026-03-31','2026-04-01','2026-04-02','2026-04-03','2026-04-04','2026-04-06','2026-04-07','2026-04-08','2026-04-09','2026-04-10','2026-04-11','2026-04-13','2026-04-14','2026-04-15','2026-04-16','2026-04-17','2026-04-18'],'ph2');
+ph(['2026-04-20','2026-04-21','2026-04-22','2026-04-23','2026-04-24','2026-04-25','2026-04-27','2026-04-28','2026-04-29','2026-04-30','2026-05-01','2026-05-02'],'ph3');
+
+var MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+var PHNAMES = {ph1:'Этап 1 — Фундамент',ph2:'Этап 2 — Трафик и прогрев',ph3:'Этап 3 — Продажи'};
+var RLABELS = {prod:'🎯 Продюсер',expert:'🎤 Эксперт',both:'🤝 Вместе'};
+var DNAMES = ['вс','пн','вт','ср','чт','пт','сб'];
+
+var curY=2026, curM=1, role='all', openKey=null;
+// ── LOCAL STATE ───────────────────────────────────
+var done = {};
+var customTasks = {};
+var deletedIds = {};
+var calls = [];
+var docs = [];
+var supabase = null;
+var dataReady = false;
+var SUPABASE_URL = 'https://vyuabunyyseovrwvngsr.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5dWFidW55eXNlb3Zyd3ZuZ3NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NjU1NDgsImV4cCI6MjA4NzQ0MTU0OH0.gg0d3T6vK1p0cCIRbTAGoDnOSFxGfrLcR-oaiVL82ks';
+
+// ── SYNC DOT ───────────────────────────────────────
+function setSyncDot(state) {
+  var dot = document.getElementById('syncDot');
+  if (!dot) return;
+  dot.className = 'sync-dot ' + state;
+}
+
+// ── LOCALSTORAGE FALLBACK ──────────────────────────
+function loadFromLocal() {
+  try { done        = JSON.parse(localStorage.getItem('cal3')         || '{}'); } catch(e){}
+  try { docs       = JSON.parse(localStorage.getItem('launch_docs')   || '[]'); } catch(e){}
+  try { customTasks = JSON.parse(localStorage.getItem('cal_custom')   || '{}'); } catch(e){}
+  try { deletedIds  = JSON.parse(localStorage.getItem('cal_deleted')  || '{}'); } catch(e){}
+  try { calls       = JSON.parse(localStorage.getItem('launch_calls') || '[]'); } catch(e){}
+  try { docs        = JSON.parse(localStorage.getItem('launch_docs')  || '[]'); } catch(e){}
+}
+function saveToLocal() {
+  try { localStorage.setItem('cal3',          JSON.stringify(done)); } catch(e){}
+  try { localStorage.setItem('launch_docs',    JSON.stringify(docs)); } catch(e){}
+  try { localStorage.setItem('cal_custom',    JSON.stringify(customTasks)); } catch(e){}
+  try { localStorage.setItem('cal_deleted',   JSON.stringify(deletedIds)); } catch(e){}
+  try { localStorage.setItem('launch_calls',  JSON.stringify(calls)); } catch(e){}
+  try { localStorage.setItem('launch_docs',   JSON.stringify(docs)); } catch(e){}
+}
+
+// ── SUPABASE SAVE/LOAD ─────────────────────────────
+function save() {
+  saveToLocal();
+  if (!supabase) return;
+  setSyncDot('syncing');
+  supabase.from('appdata').upsert({ id: 1, done: done })
+    .then(function(){ setSyncDot('synced'); });
+}
+function saveCustom() {
+  saveToLocal();
+  if (!supabase) return;
+  setSyncDot('syncing');
+  supabase.from('appdata').upsert({ id: 1, customTasks: customTasks, deletedIds: deletedIds })
+    .then(function(){ setSyncDot('synced'); });
+}
+function saveCalls() {
+  saveToLocal();
+  if (!supabase) return;
+  setSyncDot('syncing');
+  supabase.from('appdata').upsert({ id: 1, calls: calls })
+    .then(function(){ setSyncDot('synced'); });
+}
+
+function saveDocs() {
+  saveToLocal();
+  if (!supabase) return;
+  setSyncDot('syncing');
+  sbUpsert({ docs: docs });
+}
+function saveAll() {
+  saveToLocal();
+  if (!supabase) return;
+  setSyncDot('syncing');
+  supabase.from('appdata').upsert({
+    id: 1, done: done, customTasks: customTasks,
+    deletedIds: deletedIds, calls: calls
+  }).then(function(){ setSyncDot('synced'); });
+}
+
+async function loadFromSupabase() {
+  try {
+    var res = await supabase.from('appdata').select('*').eq('id', 1).single();
+    if (res.data) {
+      done        = res.data.done        || {};
+      customTasks = res.data.customTasks || {};
+      deletedIds  = res.data.deletedIds  || {};
+      calls       = res.data.calls       || [];
+      // Also save to localStorage as cache
+      saveToLocal();
+      setSyncDot('synced');
+    }
+  } catch(e) {
+    // Fall back to localStorage
+    loadFromLocal();
+  }
+}
+
+// ── INIT APP ───────────────────────────────────────
+function initApp() {
+  dataReady = true;
+  render();
+  renderCalls();
+  renderDocs();
+  var di = document.getElementById('cf-date');
+  if (di) {
+    var t = new Date();
+    di.value = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  }
+}
+
+// ── BOOTSTRAP ─────────────────────────────────────
+(async function() {
+  // Always load localStorage first for instant render
+  loadFromLocal();
+  initApp();
+
+  // Supabase REST API - no SDK needed
+  var SB_URL = SUPABASE_URL;
+  var SB_KEY = SUPABASE_KEY;
+  var SB_HEADERS = {
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer ' + SB_KEY,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=minimal'
+  };
+
+  async function sbGet() {
+    try {
+      var r = await fetch(SB_URL + '/rest/v1/appdata?id=eq.1&select=*', { headers: SB_HEADERS });
+      if (!r.ok) { console.log('SB GET error:', r.status, await r.text()); return null; }
+      var rows = await r.json();
+      return rows && rows[0] ? rows[0] : null;
+    } catch(e) { console.log('SB GET fail:', e); return null; }
+  }
+
+  async function sbUpsert(payload) {
+    try {
+      var r = await fetch(SB_URL + '/rest/v1/appdata', {
+        method: 'POST',
+        headers: Object.assign({}, SB_HEADERS, { 'Prefer': 'resolution=merge-duplicates,return=minimal' }),
+        body: JSON.stringify(Object.assign({ id: 1 }, payload))
+      });
+      if (!r.ok) console.log('SB UPSERT error:', r.status, await r.text());
+      else setSyncDot('synced');
+    } catch(e) { console.log('SB UPSERT fail:', e); setSyncDot(''); }
+  }
+
+  // Override save functions to use REST
+  save = function() {
+    saveToLocal();
+    setSyncDot('syncing');
+    sbUpsert({ done: done });
+  };
+  saveCustom = function() {
+    saveToLocal();
+    setSyncDot('syncing');
+    sbUpsert({ customTasks: customTasks, deletedIds: deletedIds });
+  };
+  saveCalls = function() {
+    saveToLocal();
+    setSyncDot('syncing');
+    sbUpsert({ calls: calls });
+  };
+
+  // Load fresh data from Supabase
+  console.log('SB: loading from REST API...');
+  setSyncDot('syncing');
+  var row = await sbGet();
+  console.log('SB: got row:', !!row);
+  if (row) {
+    done        = row.done        || {};
+    customTasks = row.customTasks || {};
+    deletedIds  = row.deletedIds  || {};
+    calls       = row.calls       || [];
+    docs        = row.docs        || [];
+    saveToLocal();
+    setSyncDot('synced');
+    render();
+    renderCalls();
+    if (document.getElementById('page-dashboard') &&
+        document.getElementById('page-dashboard').classList.contains('active')) {
+      renderDashboard();
+    }
+  } else {
+    setSyncDot('');
+  }
+
+  // Poll for changes every 5 seconds (simple alternative to realtime)
+  setInterval(async function() {
+    var r = await sbGet();
+    if (r) {
+      done        = r.done        || {};
+      customTasks = r.customTasks || {};
+      deletedIds  = r.deletedIds  || {};
+      calls       = r.calls       || [];
+      docs        = r.docs        || [];
+      docs        = r.docs        || [];
+      saveToLocal();
+      render();
+      renderCalls();
+      renderDocs();
+      if (document.getElementById('page-dashboard') &&
+          document.getElementById('page-dashboard').classList.contains('active')) {
+        renderDashboard();
+      }
+      if (document.getElementById('page-docs') &&
+          document.getElementById('page-docs').classList.contains('active')) {
+        renderDocs();
+      }
+    }
+  }, 5000);
+})();
+
+// ── TASK HELPERS ───────────────────────────────────
+function getDayTasks(key) {
+  var base = (TASKS[key]||[]).filter(function(t){ return !deletedIds[t.id]; });
+  var custom = customTasks[key]||[];
+  return base.concat(custom);
+}
+
+function genId(){ return 'c'+Date.now()+Math.random().toString(36).slice(2,6); }
+
+function dkey(y,m,d){return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');}
+function vt(tasks){if(role==='all')return tasks;return tasks.filter(function(t){return t.role===role||t.role==='both';});}
+// save() defined above in Firebase block
+
+function toggleTask(id){done[id]=!done[id];save();render();if(openKey)openModal(openKey);}
+
+function updateProgress(){
+  var all=getAllTasks();
+  var total=all.length,dn=all.filter(function(t){return done[t.id];}).length;
+  document.getElementById('totalN').textContent=total;
+  document.getElementById('doneN').textContent=dn;
+  document.getElementById('progFill').style.width=(total?Math.round(dn/total*100):0)+'%';
+}
+
+function getAllTasks(){
+  var keys=new Set(Object.keys(TASKS).concat(Object.keys(customTasks)));
+  var all=[];
+  keys.forEach(function(k){all=all.concat(getDayTasks(k));});
+  return all;
+}
+
+function setRole(r){
+  role=r;
+  document.getElementById('btn-all').className='rf-btn'+(r==='all'?' act-all':'');
+  document.getElementById('btn-prod').className='rf-btn'+(r==='prod'?' act-prod':'');
+  document.getElementById('btn-expert').className='rf-btn'+(r==='expert'?' act-expert':'');
+  render();
+}
+
+function render(){
+  updateProgress();
+  var today=new Date();
+  var todayKey=dkey(today.getFullYear(),today.getMonth(),today.getDate());
+  document.getElementById('monthTitle').textContent=MONTHS[curM]+' '+curY;
+  var firstDow=new Date(curY,curM,1).getDay();
+  var offset=firstDow===0?6:firstDow-1;
+  var dim=new Date(curY,curM+1,0).getDate();
+  var total=Math.ceil((offset+dim)/7)*7;
+  var strip=document.getElementById('phaseStrip');
+  var grid=document.getElementById('daysGrid');
+  strip.innerHTML='';grid.innerHTML='';
+
+  for(var i=0;i<total;i++){
+    var dayN=i-offset+1;
+    var valid=dayN>=1&&dayN<=dim;
+    var key=valid?dkey(curY,curM,dayN):null;
+    var allT=key?getDayTasks(key):[];
+    var vtasks=vt(allT);
+    var phase=key?(PHASES[key]||null):null;
+    var dow=i%7;
+    var isToday=key===todayKey;
+    var allDone=vtasks.length>0&&vtasks.every(function(t){return done[t.id];});
+
+    var sc=document.createElement('div');
+    sc.className='ps-cell'+(phase?' '+phase:'');
+    strip.appendChild(sc);
+
+    var cell=document.createElement('div');
+    if(!valid){cell.className='day-cell empty';grid.appendChild(cell);continue;}
+    var cls=['day-cell'];
+    if(dow>=5)cls.push('wknd-cell');
+    if(isToday)cls.push('is-today');
+    if(vtasks.length>0)cls.push('clickable');
+    if(allDone)cls.push('all-done');
+    cell.className=cls.join(' ');
+
+    var dnDiv=document.createElement('div');
+    dnDiv.className='dn'+(isToday?' today-dn':'');
+    dnDiv.innerHTML='<span>'+dayN+'</span>'+(isToday?'<span class="today-tag">сегодня</span>':'');
+    cell.appendChild(dnDiv);
+
+    if(vtasks.length>0){
+      var tw=document.createElement('div');tw.className='day-tasks';
+      vtasks.slice(0,3).forEach(function(t){
+        var pill=document.createElement('div');
+        pill.className='tpill '+t.role+(done[t.id]?' done':'');
+        var dot=document.createElement('div');dot.className='tdot';
+        var txt=document.createElement('div');txt.className='ttext';txt.textContent=t.text;
+        pill.appendChild(dot);pill.appendChild(txt);
+        (function(tid){pill.addEventListener('click',function(e){e.stopPropagation();toggleTask(tid);});})(t.id);
+        tw.appendChild(pill);
+      });
+      if(vtasks.length>3){
+        var more=document.createElement('div');more.className='more-label';
+        more.textContent='+'+(vtasks.length-3)+' ещё...';tw.appendChild(more);
+      }
+      cell.appendChild(tw);
+      (function(k){cell.addEventListener('click',function(){openModal(k);});})(key);
+    }
+    grid.appendChild(cell);
+  }
+}
+
+function openModal(key){
+  openKey=key;
+  var p=key.split('-'),y=+p[0],m=+p[1]-1,d=+p[2];
+  var obj=new Date(y,m,d);
+  document.getElementById('mDate').textContent=d+' '+MONTHS[m]+' — '+DNAMES[obj.getDay()];
+  document.getElementById('mPhase').textContent=PHASES[key]?PHNAMES[PHASES[key]]:'';
+  renderModalTasks(key);
+  document.getElementById('overlay').classList.add('open');
+}
+
+function renderModalTasks(key){
+  var tasks=vt(getDayTasks(key));
+  var wrap=document.getElementById('mTasks');
+  wrap.innerHTML='';
+
+  tasks.forEach(function(t){
+    var isCustom=!!(t.custom);
+    var div=document.createElement('div');
+    div.className='mtask '+t.role+(done[t.id]?' done':'')+(isCustom?' custom-task':'');
+    div.style.position='relative';
+
+    // Checkbox area
+    var chk=document.createElement('div');
+    chk.className='mcheck';
+    if(done[t.id])chk.textContent='✓';
+
+    // Body
+    var body=document.createElement('div');
+    body.className='mbody';
+    body.style.flex='1';
+    var roleLabel=document.createElement('div');
+    roleLabel.className='mrole';
+    roleLabel.innerHTML=RLABELS[t.role]+(isCustom?'<span class="custom-badge">своя</span>':'');
+    var textEl=document.createElement('div');
+    textEl.className='mtext';
+    textEl.textContent=t.text;
+    var timeEl=document.createElement('div');
+    timeEl.className='mtime';
+    timeEl.textContent=t.time||'';
+    body.appendChild(roleLabel);
+    body.appendChild(textEl);
+    body.appendChild(timeEl);
+
+    // Action buttons
+    var actions=document.createElement('div');
+    actions.className='mtask-actions';
+
+    // Move button
+    var moveBtn=document.createElement('button');
+    moveBtn.className='mtask-move';
+    moveBtn.title='Перенести на другой день';
+    moveBtn.textContent='📅';
+    moveBtn.addEventListener('click',(function(tid,taskObj,dayKey){
+      return function(e){
+        e.stopPropagation();
+        // Remove existing move panels
+        wrap.querySelectorAll('.move-panel').forEach(function(el){el.remove();});
+        // Show move panel after this task div
+        var panel=document.createElement('div');
+        panel.className='move-panel';
+        var lbl=document.createElement('label');
+        lbl.textContent='Перенести на дату:';
+        var row=document.createElement('div');
+        row.className='move-panel-row';
+        var inp=document.createElement('input');
+        inp.type='date';
+        inp.className='move-date-input';
+        inp.value=dayKey;
+        var confirmBtn=document.createElement('button');
+        confirmBtn.className='move-confirm';
+        confirmBtn.textContent='→';
+        confirmBtn.addEventListener('click',function(){
+          var newKey=inp.value;
+          if(!newKey||newKey===dayKey){panel.remove();return;}
+          moveTask(taskObj,dayKey,newKey);
+          panel.remove();
+          renderModalTasks(dayKey);
+          render();
+          renderDashboard();
+        });
+        var cancelBtn=document.createElement('button');
+        cancelBtn.className='move-cancel';
+        cancelBtn.textContent='✕';
+        cancelBtn.addEventListener('click',function(){panel.remove();});
+        row.appendChild(inp);row.appendChild(confirmBtn);row.appendChild(cancelBtn);
+        panel.appendChild(lbl);panel.appendChild(row);
+        div.insertAdjacentElement('afterend',panel);
+      };
+    })(t.id,t,key));
+    actions.appendChild(moveBtn);
+
+    // Delete button
+    var delBtn=document.createElement('button');
+    delBtn.className='mtask-del';
+    delBtn.title='Удалить задачу';
+    delBtn.textContent='🗑';
+    delBtn.addEventListener('click',(function(tid,taskObj,dayKey,isC){
+      return function(e){
+        e.stopPropagation();
+        deleteTask(tid,taskObj,dayKey,isC);
+        renderModalTasks(dayKey);
+        render();
+        renderDashboard();
+      };
+    })(t.id,t,key,isCustom));
+    actions.appendChild(delBtn);
+
+    // Checkbox click
+    (function(tid){
+      chk.style.cursor='pointer';
+      chk.addEventListener('click',function(e){e.stopPropagation();toggleTask(tid);renderModalTasks(key);render();renderDashboard();});
+    })(t.id);
+
+    div.appendChild(chk);
+    div.appendChild(body);
+    div.appendChild(actions);
+    wrap.appendChild(div);
+  });
+
+  // Add task button
+  var addBtn=document.createElement('button');
+  addBtn.className='modal-add-btn';
+  addBtn.innerHTML='<span>+</span> Добавить задачу';
+  addBtn.addEventListener('click',function(){
+    addBtn.style.display='none';
+    var form=buildAddForm(key,function(){
+      renderModalTasks(key);render();renderDashboard();
+    },function(){
+      addBtn.style.display='flex';
+      var f=wrap.querySelector('.modal-add-form');
+      if(f)f.remove();
+    });
+    wrap.appendChild(form);
+  });
+  wrap.appendChild(addBtn);
+}
+
+function buildAddForm(key,onSave,onCancel){
+  var form=document.createElement('div');
+  form.className='modal-add-form';
+
+  var row1=document.createElement('div');row1.className='maf-row';
+  var textInp=document.createElement('input');
+  textInp.className='maf-input';textInp.placeholder='Текст задачи...';textInp.type='text';
+
+  var rolesel=document.createElement('select');rolesel.className='maf-select';
+  [{v:'prod',l:'🎯 Продюсер'},{v:'expert',l:'🎤 Эксперт'},{v:'both',l:'🤝 Вместе'}].forEach(function(opt){
+    var o=document.createElement('option');o.value=opt.v;o.textContent=opt.l;rolesel.appendChild(o);
+  });
+
+  var timeInp=document.createElement('input');
+  timeInp.className='maf-input maf-time';timeInp.placeholder='~1 ч';timeInp.type='text';timeInp.style.width='80px';
+
+  row1.appendChild(textInp);row1.appendChild(rolesel);row1.appendChild(timeInp);
+  form.appendChild(row1);
+
+  var btns=document.createElement('div');btns.className='maf-btns';
+  var saveBtn=document.createElement('button');saveBtn.className='maf-save';saveBtn.textContent='Сохранить';
+  saveBtn.addEventListener('click',function(){
+    var txt=textInp.value.trim();
+    if(!txt){textInp.focus();return;}
+    var task={id:genId(),role:rolesel.value,text:txt,time:timeInp.value||'',custom:true};
+    if(!customTasks[key])customTasks[key]=[];
+    customTasks[key].push(task);
+    saveCustom();
+    onSave();
+  });
+  var cancelBtn=document.createElement('button');cancelBtn.className='maf-cancel';cancelBtn.textContent='Отмена';
+  cancelBtn.addEventListener('click',onCancel);
+  btns.appendChild(saveBtn);btns.appendChild(cancelBtn);
+  form.appendChild(btns);
+  setTimeout(function(){textInp.focus();},50);
+  return form;
+}
+
+function deleteTask(tid,task,dayKey,isCustom){
+  if(isCustom){
+    if(customTasks[dayKey]){
+      customTasks[dayKey]=customTasks[dayKey].filter(function(t){return t.id!==tid;});
+    }
+  } else {
+    deletedIds[tid]=true;
+    delete done[tid];
+    save();
+  }
+  saveCustom();
+}
+
+function moveTask(task,fromKey,toKey){
+  // Remove from source
+  if(task.custom){
+    if(customTasks[fromKey]){
+      customTasks[fromKey]=customTasks[fromKey].filter(function(t){return t.id!==task.id;});
+    }
+  } else {
+    // Mark original as deleted, add as custom to new day
+    deletedIds[task.id]=true;
+    delete done[task.id];
+    save();
+  }
+  // Add to destination as custom task
+  var newTask={id:genId(),role:task.role,text:task.text,time:task.time||'',custom:true};
+  if(!customTasks[toKey])customTasks[toKey]=[];
+  customTasks[toKey].push(newTask);
+  saveCustom();
+}
+
+function closeModal(){document.getElementById('overlay').classList.remove('open');openKey=null;}
+document.getElementById('overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+function prevMonth(){curM--;if(curM<0){curM=11;curY--;}render();}
+function nextMonth(){curM++;if(curM>11){curM=0;curY++;}render();}
+
+
+
+// ── CALLS STORAGE ──────────────────────────────────
+// calls & saveCalls defined above in Firebase block
+
+function addCall() {
+  var date = document.getElementById('cf-date').value;
+  var who = document.getElementById('cf-who').value.trim();
+  var agreements = document.getElementById('cf-agreements').value.trim();
+  var tasks = document.getElementById('cf-tasks').value.trim();
+
+  if (!date || !agreements) {
+    alert('Заполни дату и поле "О чём договорились"');
+    return;
+  }
+
+  var call = {
+    id: Date.now(),
+    date: date,
+    who: who || 'Продюсер + Коуч',
+    agreements: agreements,
+    tasks: tasks ? tasks.split('\n').filter(function(t){ return t.trim(); }) : []
+  };
+
+  calls.unshift(call); // newest first
+  saveCalls();
+
+  // Clear form
+  document.getElementById('cf-date').value = '';
+  document.getElementById('cf-who').value = '';
+  document.getElementById('cf-agreements').value = '';
+  document.getElementById('cf-tasks').value = '';
+
+  renderCalls();
+  alert('Созвон добавлен! Посмотри на дашборде.');
+}
+
+function deleteCall(id) {
+  calls = calls.filter(function(c){ return c.id != id; });
+  saveCalls();
+  renderCalls();
+  renderDashboard();
+}
+
+function formatDate(dateStr) {
+  var months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  var d = new Date(dateStr + 'T12:00:00');
+  return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function renderCalls() {
+  var wrap = document.getElementById('calls-list');
+  if (!wrap) return;
+  if (calls.length === 0) {
+    wrap.innerHTML = '<div class="db-empty">Созвонов ещё нет. Добавь первый выше.</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  calls.forEach(function(call, idx) {
+    var card = document.createElement('div');
+    card.className = 'call-card' + (idx === 0 ? ' latest' : '');
+
+    // Delete button with inline confirmation
+    var delBtn = document.createElement('button');
+    delBtn.className = 'call-delete';
+    delBtn.title = 'Удалить';
+    delBtn.textContent = '✕';
+    delBtn.addEventListener('click', (function(cid, cardEl) {
+      return function(e) {
+        e.stopPropagation();
+        // Check if already in confirm mode
+        var existing = cardEl.querySelector('.call-confirm');
+        if (existing) { existing.remove(); return; }
+        // Show inline confirm
+        var confirmBar = document.createElement('div');
+        confirmBar.className = 'call-confirm';
+        confirmBar.innerHTML = '<span>Удалить этот созвон?</span>' +
+          '<button class="call-confirm-yes">Да, удалить</button>' +
+          '<button class="call-confirm-no">Отмена</button>';
+        confirmBar.querySelector('.call-confirm-yes').addEventListener('click', function() {
+          deleteCall(cid);
+        });
+        confirmBar.querySelector('.call-confirm-no').addEventListener('click', function() {
+          confirmBar.remove();
+        });
+        cardEl.appendChild(confirmBar);
+      };
+    })(call.id, card));
+    card.appendChild(delBtn);
+
+    // Header
+    var header = document.createElement('div');
+    header.className = 'call-card-header';
+
+    var dateEl = document.createElement('div');
+    dateEl.className = 'call-card-date';
+    dateEl.textContent = formatDate(call.date);
+    header.appendChild(dateEl);
+
+    var whoEl = document.createElement('div');
+    whoEl.className = 'call-card-who';
+    whoEl.textContent = call.who;
+    header.appendChild(whoEl);
+
+    if (idx === 0) {
+      var tag = document.createElement('span');
+      tag.className = 'call-latest-tag';
+      tag.textContent = 'Последний';
+      header.appendChild(tag);
+    }
+    card.appendChild(header);
+
+    // Agreements
+    var agr = document.createElement('div');
+    agr.className = 'call-card-agreements';
+    agr.textContent = call.agreements;
+    card.appendChild(agr);
+
+    // Tasks
+    if (call.tasks && call.tasks.length > 0) {
+      var tasksLabel = document.createElement('div');
+      tasksLabel.className = 'call-card-tasks-label';
+      tasksLabel.textContent = 'Задачи';
+      card.appendChild(tasksLabel);
+      call.tasks.forEach(function(t) {
+        var taskEl = document.createElement('div');
+        taskEl.className = 'call-card-task';
+        taskEl.textContent = t;
+        card.appendChild(taskEl);
+      });
+    }
+
+    wrap.appendChild(card);
+  });
+}
+
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── DASHBOARD ───────────────────────────────────────
+function renderDashboard() {
+  // Count tasks
+  var allTasks = getAllTasks();
+
+  var total = allTasks.length;
+  var totalDone = allTasks.filter(function(t){ return done[t.id]; }).length;
+  var prodTasks = allTasks.filter(function(t){ return t.role === 'prod' || t.role === 'both'; });
+  var expertTasks = allTasks.filter(function(t){ return t.role === 'expert' || t.role === 'both'; });
+  var prodDone = prodTasks.filter(function(t){ return done[t.id]; }).length;
+  var expertDone = expertTasks.filter(function(t){ return done[t.id]; }).length;
+
+  setText('db-total-done', totalDone);
+  setText('db-total-sub', 'из ' + total + ' задач');
+  setWidth('db-pfill', total ? Math.round(totalDone/total*100) : 0);
+
+  setText('db-prod-done', prodDone);
+  setText('db-prod-sub', 'из ' + prodTasks.length);
+  setWidth('db-prod-fill', prodTasks.length ? Math.round(prodDone/prodTasks.length*100) : 0);
+
+  setText('db-expert-done', expertDone);
+  setText('db-expert-sub', 'из ' + expertTasks.length);
+  setWidth('db-expert-fill', expertTasks.length ? Math.round(expertDone/expertTasks.length*100) : 0);
+
+  // Days countdown
+  var now = new Date();
+  now.setHours(0,0,0,0);
+  var endDate = new Date('2026-05-02');
+  var intensiveDate = new Date('2026-04-21');
+  var daysEnd = Math.max(0, Math.round((endDate - now) / 86400000));
+  var daysInt = Math.max(0, Math.round((intensiveDate - now) / 86400000));
+  setText('db-days', daysEnd > 0 ? daysEnd : '🏁');
+  setText('db-intensive', daysInt > 0 ? daysInt : '🎓');
+
+  // Today's tasks
+  var todayKey = (function(){
+    var t = new Date();
+    return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  })();
+  var todayWrap = document.getElementById('db-today-tasks');
+  if (todayWrap) {
+    var todayT = TASKS[todayKey] || [];
+    if (todayT.length === 0) {
+      todayWrap.innerHTML = '<div class="db-empty">На сегодня задач нет — отдыхай 🎉</div>';
+    } else {
+      todayWrap.innerHTML = '';
+      todayT.forEach(function(t) {
+        var div = document.createElement('div');
+        div.className = 'db-today-task ' + t.role + (done[t.id] ? ' done' : '');
+        div.style.opacity = done[t.id] ? '0.45' : '1';
+        div.innerHTML =
+          '<div style="flex:1">' +
+            '<div class="db-today-role">' + ({prod:'🎯 Продюсер',expert:'🎤 Эксперт',both:'🤝 Вместе'}[t.role]) + '</div>' +
+            '<div class="db-today-text">' + (done[t.id] ? '<s>' : '') + escHtml(t.text) + (done[t.id] ? '</s>' : '') + '</div>' +
+            '<div class="db-today-time">' + t.time + '</div>' +
+          '</div>';
+        todayWrap.appendChild(div);
+      });
+    }
+  }
+
+  // Last call on dashboard
+  var dbLastCall = document.getElementById('db-last-call');
+  if (dbLastCall) {
+    if (calls.length === 0) {
+      dbLastCall.innerHTML = '<div class="db-empty">Созвонов ещё не добавлено.<br>Перейди на вкладку <b>Созвоны</b> и добавь первый.</div>';
+    } else {
+      var lc = calls[0];
+      var tasksHtml = '';
+      if (lc.tasks && lc.tasks.length > 0) {
+        tasksHtml = '<div class="db-lc-tasks-title">Задачи</div>';
+        lc.tasks.forEach(function(t){ tasksHtml += '<div class="db-lc-task">' + escHtml(t) + '</div>'; });
+      }
+      dbLastCall.innerHTML =
+        '<div class="db-last-call-card">' +
+          '<div class="db-lc-date">' + formatDate(lc.date) + '</div>' +
+          '<div class="db-lc-who">' + escHtml(lc.who) + '</div>' +
+          '<div class="db-lc-agreements">' + escHtml(lc.agreements) + '</div>' +
+          tasksHtml +
+        '</div>';
+    }
+  }
+
+  // Phase status
+  var ph1End = new Date('2026-03-08'); ph1End.setHours(0,0,0,0);
+  var ph2End = new Date('2026-04-19'); ph2End.setHours(0,0,0,0);
+  var ph3End = new Date('2026-05-03'); ph3End.setHours(0,0,0,0);
+  var ph1Start = new Date('2026-02-22'); ph1Start.setHours(0,0,0,0);
+  var ph2Start = new Date('2026-03-09'); ph2Start.setHours(0,0,0,0);
+  var ph3Start = new Date('2026-04-20'); ph3Start.setHours(0,0,0,0);
+
+  setPhBadge('dbph1-badge', now, ph1Start, ph1End);
+  setPhBadge('dbph2-badge', now, ph2Start, ph2End);
+  setPhBadge('dbph3-badge', now, ph3Start, ph3End);
+}
+
+function setPhBadge(id, now, start, end) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (now >= end) {
+    el.textContent = 'Завершён'; el.className = 'db-phase-badge done';
+  } else if (now >= start) {
+    el.textContent = 'Идёт сейчас'; el.className = 'db-phase-badge active';
+  } else {
+    el.textContent = 'Впереди'; el.className = 'db-phase-badge upcoming';
+  }
+}
+
+function setText(id, val) { var el = document.getElementById(id); if(el) el.textContent = val; }
+function setWidth(id, pct) { var el = document.getElementById(id); if(el) el.style.width = pct + '%'; }
+
+// Set today's date as default in form
+// init handled by Firebase onValue listener
+
+// ── DOCS ───────────────────────────────────────────
+var docs = [];
+var SB_STORAGE_URL = 'https://vyuabunyyseovrwvngsr.supabase.co/storage/v1';
+var SB_BUCKET = 'project-files';
+
+function getFileIcon(name) {
+  var ext = (name || '').split('.').pop().toLowerCase();
+  var icons = { pdf: '📄', doc: '📝', docx: '📝', xls: '📊', xlsx: '📊',
+    ppt: '📊', pptx: '📊', png: '🖼', jpg: '🖼', jpeg: '🖼', gif: '🖼',
+    webp: '🖼', mp4: '🎬', mov: '🎬', zip: '🗜', rar: '🗜', txt: '📃' };
+  return icons[ext] || '📁';
+}
+
+function formatSize(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return Math.round(bytes/1024) + ' KB';
+  return (bytes/1024/1024).toFixed(1) + ' MB';
+}
+
+function saveDocs() {
+  try { localStorage.setItem('launch_docs', JSON.stringify(docs)); } catch(e){}
+  setSyncDot('syncing');
+  sbUpsert({ docs: docs });
+}
+
+async function handleFileSelect(input) {
+  var file = input.files[0];
+  if (!file) return;
+  await uploadFile(file);
+}
+
+// Drag and drop
+document.addEventListener('DOMContentLoaded', function() {
+  var zone = document.getElementById('uploadZone');
+  if (!zone) return;
+  zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', function() { zone.classList.remove('drag-over'); });
+  zone.addEventListener('drop', function(e) {
+    e.preventDefault(); zone.classList.remove('drag-over');
+    var file = e.dataTransfer.files[0];
+    if (file) uploadFile(file);
+  });
+});
+
+async function uploadFile(file) {
+  var name    = document.getElementById('doc-name').value.trim() || file.name;
+  var comment = document.getElementById('doc-comment').value.trim();
+  var key     = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+
+  // Show progress
+  var progWrap = document.getElementById('upload-progress');
+  var progFill = document.getElementById('uploadProgFill');
+  var progText = document.getElementById('uploadProgText');
+  progWrap.style.display = 'block';
+  progFill.style.width = '10%';
+  progText.textContent = 'Загружаем...';
+
+  try {
+    // Upload to Supabase Storage
+    var uploadUrl = SB_STORAGE_URL + '/object/' + SB_BUCKET + '/' + key;
+    var xhr = new XMLHttpRequest();
+    
+    await new Promise(function(resolve, reject) {
+      xhr.upload.onprogress = function(e) {
+        if (e.lengthComputable) {
+          var pct = Math.round(e.loaded / e.total * 90) + 5;
+          progFill.style.width = pct + '%';
+          progText.textContent = 'Загружаем... ' + pct + '%';
+        }
+      };
+      xhr.onload = function() {
+        if (xhr.status === 200 || xhr.status === 201) resolve();
+        else reject(new Error('Upload failed: ' + xhr.status + ' ' + xhr.responseText));
+      };
+      xhr.onerror = function() { reject(new Error('Network error')); };
+      xhr.open('POST', uploadUrl);
+      xhr.setRequestHeader('apikey', SUPABASE_KEY);
+      xhr.setRequestHeader('Authorization', 'Bearer ' + SUPABASE_KEY);
+      xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+      xhr.setRequestHeader('x-upsert', 'true');
+      xhr.send(file);
+    });
+
+    var publicUrl = SB_STORAGE_URL + '/object/public/' + SB_BUCKET + '/' + key;
+    progFill.style.width = '100%';
+    progText.textContent = 'Готово! ✓';
+
+    docs.unshift({
+      id: Date.now(), key: key, name: name, url: publicUrl,
+      comment: comment, size: file.size, type: file.type,
+      date: new Date().toISOString().slice(0,10)
+    });
+    saveDocs();
+
+    document.getElementById('doc-name').value = '';
+    document.getElementById('doc-comment').value = '';
+    document.getElementById('fileInput').value = '';
+
+    setTimeout(function() {
+      progWrap.style.display = 'none';
+      progFill.style.width = '0%';
+    }, 2000);
+
+    renderDocs();
+
+  } catch(e) {
+    console.error('Upload error:', e);
+    progText.textContent = 'Ошибка: ' + e.message;
+    progFill.style.width = '0%';
+    setTimeout(function() { progWrap.style.display = 'none'; }, 3000);
+  }
+}
+
+async function deleteDoc(id) {
+  var doc = docs.find(function(d){ return d.id == id; });
+  if (doc && doc.key) {
+    // Delete from storage
+    try {
+      await fetch(SB_STORAGE_URL + '/object/' + SB_BUCKET + '/' + doc.key, {
+        method: 'DELETE',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+      });
+    } catch(e) { console.log('Storage delete error:', e); }
+  }
+  docs = docs.filter(function(d){ return d.id != id; });
+  saveDocs();
+  renderDocs();
+}
+
+function renderDocs() {
+  var wrap = document.getElementById('docs-list');
+  if (!wrap) return;
+  if (!docs || docs.length === 0) {
+    wrap.innerHTML = '<div class="db-empty">Файлов ещё нет. Загрузи первый выше.</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  docs.forEach(function(doc) {
+    var card = document.createElement('div');
+    card.className = 'doc-card';
+
+    var delBtn = document.createElement('button');
+    delBtn.className = 'doc-del'; delBtn.title = 'Удалить'; delBtn.textContent = '✕';
+    delBtn.addEventListener('click', (function(did, cardEl) {
+      return function(e) {
+        e.stopPropagation();
+        var existing = cardEl.querySelector('.call-confirm');
+        if (existing) { existing.remove(); return; }
+        var bar = document.createElement('div'); bar.className = 'call-confirm';
+        bar.innerHTML = '<span>Удалить файл?</span><button class="call-confirm-yes">Да</button><button class="call-confirm-no">Отмена</button>';
+        bar.querySelector('.call-confirm-yes').addEventListener('click', function(){ deleteDoc(did); });
+        bar.querySelector('.call-confirm-no').addEventListener('click', function(){ bar.remove(); });
+        cardEl.appendChild(bar);
+      };
+    })(doc.id, card));
+
+    var icon = document.createElement('div');
+    icon.className = 'doc-icon';
+    icon.textContent = getFileIcon(doc.name);
+
+    var info = document.createElement('div'); info.className = 'doc-info';
+    info.innerHTML =
+      '<div class="doc-name">' + escHtml(doc.name) + '</div>' +
+      (doc.size ? '<div class="doc-size">' + formatSize(doc.size) + '</div>' : '') +
+      (doc.comment ? '<div class="doc-comment">' + escHtml(doc.comment) + '</div>' : '') +
+      '<div class="doc-date">' + formatDate(doc.date) + '</div>';
+
+    var openBtn = document.createElement('a');
+    openBtn.className = 'doc-open'; openBtn.href = doc.url;
+    openBtn.target = '_blank'; openBtn.rel = 'noopener noreferrer';
+    openBtn.textContent = 'Открыть →';
+
+    card.appendChild(delBtn); card.appendChild(icon);
+    card.appendChild(info); card.appendChild(openBtn);
+    wrap.appendChild(card);
+  });
+}
+
+</script>
+
+<!-- ══════════════ DOCS PAGE ══════════════ -->
+<div class="page" id="page-docs">
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <div class="hero-tag">Файлы проекта</div>
+      <h2>Документы</h2>
+      <div class="hero-sub">Загружай PDF, Word, Excel, изображения — открываются на любом устройстве</div>
+    </div>
+  </div>
+  <div class="wrap">
+
+    <div class="db-section">
+      <div class="section-title">Загрузить файл</div>
+      <div class="call-form">
+        <div class="cf-field">
+          <label class="cf-label">Файл (PDF, Word, Excel, изображение и др.)</label>
+          <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">Нажми чтобы выбрать файл</div>
+            <div class="upload-sub">или перетащи сюда</div>
+            <input type="file" id="fileInput" style="display:none" onchange="handleFileSelect(this)">
+          </div>
+          <div id="upload-progress" style="display:none">
+            <div class="upload-prog-bar"><div class="upload-prog-fill" id="uploadProgFill"></div></div>
+            <div class="upload-prog-text" id="uploadProgText">Загружаем...</div>
+          </div>
+        </div>
+        <div class="cf-row">
+          <div class="cf-field cf-flex">
+            <label class="cf-label">Название (необязательно)</label>
+            <input type="text" id="doc-name" class="cf-input" placeholder="По умолчанию — имя файла">
+          </div>
+        </div>
+        <div class="cf-field">
+          <label class="cf-label">Комментарий (необязательно)</label>
+          <input type="text" id="doc-comment" class="cf-input" placeholder="Например: финальная версия">
+        </div>
+      </div>
+    </div>
+
+    <div class="db-section">
+      <div class="section-title">Файлы проекта</div>
+      <div id="docs-list">
+        <div class="db-empty">Файлов ещё нет. Загрузи первый выше.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- iOS Install Hint -->
+<div class="ios-install-hint" id="iosHint">
+  Чтобы установить как приложение:<br>
+  Нажми <b>Поделиться</b> (квадрат со стрелкой) → <b>На экран «Домой»</b>
+  <button class="ios-hint-close" onclick="document.getElementById('iosHint').classList.remove('show');localStorage.setItem('pwa_hint_shown','1')">Понятно</button>
+</div>
+
+<!-- Android Install Banner -->
+<div class="pwa-banner" id="pwaBanner">
+  <div class="pwa-banner-icon">🚀</div>
+  <div class="pwa-banner-text">
+    <div class="pwa-banner-title">Установить приложение</div>
+    <div class="pwa-banner-sub">Добавь на рабочий стол для быстрого доступа</div>
+  </div>
+  <button class="pwa-banner-close" onclick="document.getElementById('pwaBanner').classList.remove('show')">✕</button>
+</div>
+
+
+</body>
+</html>
